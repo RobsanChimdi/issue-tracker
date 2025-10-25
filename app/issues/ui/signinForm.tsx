@@ -1,0 +1,36 @@
+'use client';
+import { login } from '@/app/actions/login';
+import React, { useActionState } from 'react'
+
+function SigninForm () {
+    const [state, action, pending]=useActionState(login, undefined)
+      return (
+    <div className="flex items-center justify-center h-auto mt-10 bg-gray-50">
+        <form action={action} className="bg-white shadow-md rounded-2xl p-8 w-72 border border-gray-200">
+        <h2 className='flex items-center justify-center text-gray-950 text-2xl mb-2'>Sign In</h2>
+        <div >
+            <label htmlFor="email" className='text-gray-950 text-xl font-sans mb-3'>Email:</label>
+            <input type="email" id="email" name="email"  className='border p-2 rounded-lg  w-full mb-2' />
+            {state?.errors?.email && (
+              <p className="text-sm text-red-500 mt-1">{state.errors.email[0]}</p>
+            )}
+        </div>
+        <div>
+            <label htmlFor="password" className='text-gray-950 text-xl font-sans mb-3'>Password:</label>
+            <input type="password" id="password" name="password" className='border p-2 rounded-lg  w-full'/>
+            {state?.errors?.password && (
+              <p className="text-sm text-red-500 mt-1 mb-4">{state.errors.password[0]}</p>
+            )}
+        </div>
+        <button type="submit" disabled={pending} className='bg-sky-400 w-full p-2 mt-4 rounded-lg text-white font-bold hover:bg-sky-600 transition-colors'>
+          {pending ? 'Signing In...' : 'Sign In'}
+        </button>
+        {state?.message && (
+          <p className="text-sm mt-2">{state.message}</p>
+        )}
+        </form>
+    </div>
+  )
+}
+
+export default SigninForm
