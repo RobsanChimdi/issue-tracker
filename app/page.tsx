@@ -1,10 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 export default function Home() {
   return (
-    <div className="h-screen text-black items-center justify-center text-3xl bg-white">
+    <div className="h-screen text- flex  items-start justify-center text-3xl bg-white">
       
-     <h1>Tailwind is working!</h1>  
-    <button className="right-0 bottom-0 mt-2 fixed bg-blue-600"><Link href="/issues/new">New Issue</Link></button>
+  
+    <button className="top-0 mt-2  bg-blue-600 rounded-xl"><Link href="/issues/new"> <input type="new issue" className="border border-slate-900 border-spacing-4 rounded-xl" />  New Issue</Link></button>
+       
     </div>
   );
 }

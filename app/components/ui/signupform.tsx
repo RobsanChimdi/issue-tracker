@@ -80,13 +80,13 @@ export const Signup = () => {
         <button
           disabled={pending}
           type="submit"
-          className="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+          className="w-full bg-fuchsia-800 text-white font-semibold py-2 px-4 rounded-lg hover:bg-fuchsia-900 transition disabled:opacity-50"
         >
           {pending ? "Signing Up..." : "Sign Up"}
         </button>
         <p className="text-sm text-center text-gray-500 mt-4">
           Already have an account?{" "}
-          <Link href="../issues/Login" className="text-indigo-600 hover:underline">
+          <Link href="/Login" className="text-fuchsia-800 hover:underline">
             Sign In
           </Link>
         </p>

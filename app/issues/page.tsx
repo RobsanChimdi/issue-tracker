@@ -37,15 +37,9 @@ const IssuesPage = () => {
     <div className="max-w-4xl mx-auto p-8 pt-4">
       <div className="flex justify-between items-center mb-6 border-b pb-3">
         <h1 className="text-3xl font-extrabold text-gray-800">Issue Tracker</h1>
-        <Link 
-          href="/issues/new"
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
-        >
-          New Issue
-        </Link>
       </div>
       {issues.length === 0 ? (
-        <p className="text-center text-gray-500 mt-10">No issues found. Create a new one!</p>
+        <p className="text-center text-gray-500 mt-10">No issues found. <Link href="/" className='text-fuchsia-800'>Create a new one!</Link> </p>
       ) : (
         <ul className="space-y-4">
           {issues.map(issue => (
@@ -70,7 +64,7 @@ const IssuesPage = () => {
           ))}
         </ul>
       )}
-<button className="mt-6 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors">
+<button className="mt-6 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors top-6 right-0 fixed">
   <Link  href="/Auth/Signout">Signout</Link>
   </button>
     </div>

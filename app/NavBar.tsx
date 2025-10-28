@@ -27,6 +27,7 @@ const NavBar = () => {
             ))
         }
      </ul>
+     <Link href="/Auth/Login" className="right-0 absolute ">Login</Link>
     </nav>
   )
 }

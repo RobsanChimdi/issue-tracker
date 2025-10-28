@@ -37,3 +37,12 @@ export async function createSession(userId: string, email: string) {
     path: '/',
   })
 }
+export async function getSession() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("auth-token")?.value;
+
+  if (!session) return null;
+
+  const payload = await decrypt(session);
+  return payload as { userId: string; email: string } | null;
+}

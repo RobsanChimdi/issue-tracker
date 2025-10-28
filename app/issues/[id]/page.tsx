@@ -1,15 +1,16 @@
 // app/issues/[id]/page.tsx
-
+'use server'
 import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
 import React from 'react';
-
+import { deleteIssue, updateIssue } from "@/app/actions/deletionAnd Updation";
+import { DeleteB } from "../../components/ui/delete";
+import { UpdatePop } from "../../components/ui/updateval";
 const prisma = new PrismaClient();
 
 interface Props {
   params: { id: string };
 }
-
 interface Issue {
     id: number;
     title: string;
@@ -31,6 +32,10 @@ const IssueDetailPage = async ({ params }: Props) => {
     if (isNaN(issueId)) {
         return notFound(); 
     }
+ async function handleDelete() {
+    "use server";
+    await deleteIssue(issueId);
+  }
 
     const issue = await prisma.issue.findUnique({
         where: { id: issueId },
@@ -46,7 +51,7 @@ const IssueDetailPage = async ({ params }: Props) => {
                 <span 
                     className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold mb-3 ${statusMap[issue.status] || 'bg-gray-100 text-gray-800'}`}
                 >
-                    {issue.status.replace('_', ' ')}
+                    {issue.status}
                 </span>
                 
     
@@ -71,12 +76,8 @@ const IssueDetailPage = async ({ params }: Props) => {
                 </div>
                 <aside className="md:col-span-1 space-y-4">
                     <div className="flex flex-col space-y-2">
-                        <button  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition-colors">
-                            Edit Issue
-                        </button>
-                        <button className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 rounded-lg transition-colors">
-                            Delete Issue
-                        </button>
+                        <UpdatePop id={issueId} title={issue.title} description={issue.description}/>
+                        <DeleteB id={issueId}/>
                     </div>
                     <div className="bg-white p-4 rounded-xl shadow-md text-sm border border-gray-100">
                         <div className="mb-2">

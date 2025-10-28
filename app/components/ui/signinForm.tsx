@@ -1,6 +1,7 @@
 'use client';
 import { login } from '@/app/actions/login';
 import React, { useActionState } from 'react'
+import Link from 'next/link';
 
 function SigninForm () {
     const [state, action, pending]=useActionState(login, undefined)
@@ -22,12 +23,13 @@ function SigninForm () {
               <p className="text-sm text-red-500 mt-1 mb-4">{state.errors.password[0]}</p>
             )}
         </div>
-        <button type="submit" disabled={pending} className='bg-sky-400 w-full p-2 mt-4 rounded-lg text-white font-bold hover:bg-sky-600 transition-colors'>
+        <button type="submit" disabled={pending} className='bg-fuchsia-800 w-full p-2 mt-4 rounded-lg text-white font-bold hover:bg-fuchsia-900 transition-colors'>
           {pending ? 'Signing In...' : 'Sign In'}
         </button>
         {state?.message && (
           <p className="text-sm mt-2">{state.message}</p>
         )}
+        <Link href="/Auth/SignUp" className="text-fuchsia-800">Sign Up</Link>
         </form>
     </div>
   )

@@ -1,4 +1,4 @@
-import { Signup } from "../../issues/ui/signupform";
+import { Signup } from "../../components/ui/signupform";
 
 import React from 'react'
 

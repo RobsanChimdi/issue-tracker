@@ -4,6 +4,8 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('auth-token')
+
+  // Protect all routes starting with /issues
   if (request.nextUrl.pathname.startsWith('/issues')) {
     if (!token) {
       const loginUrl = new URL('/Auth/Login', request.url)
@@ -12,9 +14,10 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Continue normally
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: []
+  matcher: ['/issues/:path*'], 
 }
