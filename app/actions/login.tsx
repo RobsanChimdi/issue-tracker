@@ -21,44 +21,33 @@ import  {z} from "zod"
     .trim(),
 })
 export async function login(state: FormState, formData: FormData): Promise<FormState> {
- 
-  const validatedFields = LoginForm.safeParse({
-    email: formData.get('email') as string,
-    password: formData.get('password'),
-  });
+  const validatedFields = LoginForm.safeParse({
+    email: formData.get('email') as string,
+    password: formData.get('password'),
+  });
 
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Login.',
-    };
-  }
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Login.',
+    };
+  }
 
-  const { email, password } = validatedFields.data;
+  const { email, password } = validatedFields.data;
 
-  try {
-        const user = await (prisma.user.findUnique({
-          where: { 
-            email: email.toLowerCase().trim() 
-          },
-        }));
-if (!user || !(await bcrypt.compare(password, user.password))) {
-  return {
-    errors: { email: [''], password: [''] },
-    message: 'Invalid email or password',
-  };
-}
-    await createSession(String(user.id), user.email);
+  const user = await prisma.user.findUnique({
+    where: { email: email.toLowerCase().trim() },
+  });
 
-    const returnUrl = formData.get('returnUrl') as string;
-    if (returnUrl && returnUrl.startsWith('/')) {
-      redirect(returnUrl);
-    }
-    redirect("/issues"); 
-  } catch (error) {
-    console.error('Login error:', error);
-    return {
-      message: 'Database Error: Failed to login.',
-    };
-  }
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return { errors: { email: [''], password: [''] }, message: 'Invalid email or password' };
+  }
+
+  await createSession(String(user.id), user.email);
+
+  const returnUrl = formData.get('returnUrl') as string;
+  if (returnUrl && returnUrl.startsWith('/')) {
+    redirect(returnUrl);
+  }
+  redirect("/issues");
 }

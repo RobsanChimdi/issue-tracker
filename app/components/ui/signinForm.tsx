@@ -6,8 +6,8 @@ import Link from 'next/link';
 function SigninForm () {
     const [state, action, pending]=useActionState(login, undefined)
       return (
-    <div className="flex items-center justify-center h-auto mt-10 bg-gray-50">
-        <form action={action} className="bg-white shadow-md rounded-2xl p-8 w-72 border border-gray-200">
+    <div className="flex items-center justify-center min-h-screen  bg-gray-50">
+        <form action={action} className="bg-white shadow-md rounded-2xl p-8 md:w-80 md:h-96 w-96 border border-gray-200 h-96">
         <h2 className='flex items-center justify-center text-gray-950 text-2xl mb-2'>Sign In</h2>
         <div >
             <label htmlFor="email" className='text-gray-950 text-xl font-sans mb-3'>Email:</label>

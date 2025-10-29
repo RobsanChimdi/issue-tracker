@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
-import { getSession } from "@/app/lib/session"; // 👈 import from your file
+import { getSession } from "@/app/lib/session"; 
 
 const prisma = new PrismaClient();
 
@@ -12,13 +12,11 @@ const createIssueSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    // ✅ 1. Validate session
     const session = await getSession();
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // ✅ 2. Validate body
     const body = await request.json();
     const validation = createIssueSchema.safeParse(body);
     if (!validation.success) {
@@ -26,8 +24,6 @@ export async function POST(request: NextRequest) {
     }
 
     const { title, description } = validation.data;
-
-    // ✅ 3. Use session.userId to link the issue to the logged-in user
     const newIssue = await prisma.issue.create({
       data: {
         title,
@@ -51,14 +47,14 @@ export async function GET() {
         user: {
           select: {
             id: true,
-            name: true, // include only the name
-            email: true, // optional
+            name: true, 
+            email: true, 
           },
         },
       },
     });
 
-    return NextResponse.json(issues, { status: 200 });
+    return NextResponse.json(issues, { status: 200, headers:{"Content-type":"Application"} });
   } catch (error) {
     console.error("Error fetching issues:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

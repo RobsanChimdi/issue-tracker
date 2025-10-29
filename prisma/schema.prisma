@@ -6,6 +6,7 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -14,7 +15,7 @@ model User {
   password      String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  issue       Issue[]
+  issues        issues[]
 
   @@map("users")
 }
@@ -28,22 +29,14 @@ model VerificationToken {
   @@map("verificationtokens")
 }
 
-model Issue{
-  id Int @id @default(autoincrement())
-  title String
+model issues {
+  id          Int      @id @default(autoincrement())
+  title       String
   description String
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  users       User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Issues_userId_fkey")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-   @@map("Issues")
-
-
-}
-
-enum Status {
-  OPEN
-  IN_PROGRESS
-  CLOSED
+  @@index([userId], map: "Issues_userId_fkey")
 }

@@ -7,10 +7,10 @@ export const Signup = () => {
   const [state, action, pending] = useActionState(SignUp, undefined);
 
   return (
-    <div className=" flex items-center justify-center h-auto mt-10 bg-gray-50">
+    <div className=" flex items-center justify-center min-h-screen  bg-gray-50">
       <form
         action={action}
-        className=" bg-white shadow-md rounded-2xl p-8  w-80 border border-gray-200"
+        className=" bg-white shadow-md rounded-2xl p-8  w-80 min-h-96 border border-gray-200"
       >
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-3">
           Create an Account
