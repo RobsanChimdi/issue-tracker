@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { title, description } = validation.data;
-    const newIssue = await prisma.issue.create({
+    const newIssue = await prisma.issues.create({
       data: {
         title,
         description,
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const issues = await prisma.issue.findMany({
+    const issues = await prisma.issues.findMany({
       orderBy: { createdAt: "desc" },
       include: {
         user: {

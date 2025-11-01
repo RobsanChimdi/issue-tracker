@@ -25,7 +25,8 @@ export type FormState =
   | undefined
 
   export type SessionPayload = {
-  userId: string
+  userId: string,
   email: string
+  name:string|null,
   role?: string
 }

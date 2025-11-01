@@ -7,17 +7,105 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  password      String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  issues        issues[]
+enum Role {
+  MEMBER
+  ADMIN
+  OWNER
+}
 
+model User {
+  id               String          @id @default(cuid())
+  name             String
+  email            String          @unique
+  emailVerified    DateTime?
+  password         String
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  sentMessages     Message[]       @relation("SentMessages")
+  receivedMessages Message[]       @relation("ReceivedMessages")
+  participants     Participant[]
+  issues           Issues[]
+
+  @@index([name]) 
   @@map("users")
+}
+model Conversation {
+  id             String         @id @default(cuid())
+  isGroup        Boolean        @default(false)
+  name           String?      
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  messages       Message[]
+  participants   Participant[]
+  lastMessageId  String?   @unique 
+  lastMessage    Message?       @relation("ConversationLastMessage", fields: [lastMessageId], references: [id])
+
+  @@map("conversations")
+}
+
+model Participant {
+  id               String         @id @default(cuid())
+  userId           String
+  conversationId   String
+  unreadCount      Int            @default(0)
+  joinedAt         DateTime       @default(now())
+  role             Role           @default(MEMBER) 
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation     Conversation   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@map("participants")
+}
+
+model Message {
+  id              String         @id @default(uuid())
+  text            String?    
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  delivered       Boolean        @default(false)
+  read            Boolean        @default(false)
+  hasAttachment   Boolean        @default(false) 
+  attachments     Attachment[]   
+  senderId        String
+  recipientId     String?
+  conversationId  String
+  sender          User           @relation("SentMessages", fields: [senderId], references: [id])
+  recipient       User?          @relation("ReceivedMessages", fields: [recipientId], references: [id])
+  conversation    Conversation   @relation(fields: [conversationId], references: [id])
+  conversationAsLastMessage Conversation? @relation("ConversationLastMessage")
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@map("messages")
+}
+model Attachment {
+  id          String    @id @default(cuid())
+  messageId   String
+  type        String  
+  url         String  
+  fileName    String?   
+  fileSize    Int       
+  createdAt   DateTime  @default(now())
+
+  message     Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@map("attachments")
+}
+
+model Issues {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("issues")
 }
 
 model VerificationToken {
@@ -27,16 +115,4 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verificationtokens")
-}
-
-model issues {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime
-  users       User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Issues_userId_fkey")
-
-  @@index([userId], map: "Issues_userId_fkey")
 }
