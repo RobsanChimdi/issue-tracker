@@ -15,7 +15,7 @@ export async function GET(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const conversationId = params.id;
+  const conversationId = await params.id;
 
   try {
     const conversation = await prisma.conversation.findFirst({

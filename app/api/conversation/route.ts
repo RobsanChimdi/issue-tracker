@@ -38,7 +38,6 @@ export async function GET() {
       orderBy: { updatedAt: 'desc' },
     });
 
-    // Transform the data to match your frontend expectations
     const transformedConversations = conversations.map(conv => ({
       id: conv.id,
       isGroup: conv.isGroup,
@@ -78,7 +77,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing recipient ID' }, { status: 400 });
     }
 
-    // Check if conversation already exists between these two users
     const existingConversations = await prisma.conversation.findMany({
       where: {
         isGroup: false,
@@ -103,8 +101,6 @@ export async function POST(req: Request) {
         lastMessage: true,
       },
     });
-
-    // Filter to find exact 1:1 conversation
     const existingConversation = existingConversations.find(conv => 
       conv.participants.length === 2 &&
       conv.participants.some(p => p.userId === userId) &&
@@ -128,8 +124,6 @@ export async function POST(req: Request) {
       };
       return NextResponse.json(transformedConversation);
     }
-
-    // Create new conversation
     const newConversation = await prisma.conversation.create({
       data: {
         isGroup: false,

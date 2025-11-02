@@ -40,8 +40,6 @@ export default function ChatPage() {
       try {
         const userRes = await axios.get('/api/session');
         setCurrentUserId(userRes.data.userId);
-
-        // Get conversation details to find recipient
         const convRes = await axios.get(`/api/conversation/${conversationId}`);
         setConversation(convRes.data);
         
@@ -60,8 +58,6 @@ export default function ChatPage() {
       fetchData();
     }
   }, [conversationId]);
-
-  // Fetch messages
   useEffect(() => {
     async function fetchMessages() {
       try {
@@ -76,8 +72,6 @@ export default function ChatPage() {
       fetchMessages();
     }
   }, [conversationId]);
-
-  // Socket listeners
   useEffect(() => {
     if (!conversationId) return;
 
@@ -95,20 +89,16 @@ export default function ChatPage() {
       socket.disconnect();
     };
   }, [conversationId]);
-
-  // Send a new message
-  async function handleSend(text: string) {
+  async function handleSend(text: string, file?:File|null) {
     if (!currentUserId || !recipient || !conversationId) return;
-
-    const newMessage = {
-      senderId: currentUserId,
-      recipientId: recipient.userId,
-      conversationId,
-      text,
-    };
-
     try {
-      const res = await axios.post('/api/messages', newMessage);
+      const formData=new FormData()
+      formData.append('senderId', currentUserId)
+      formData.append("recipientId", recipient.userId);
+      formData.append("conversationId", conversationId);
+      formData.append("text", text);
+      if(file) formData.append("file", file)
+      const res = await axios.post('/api/messages', formData, {headers: { 'Content-Type': 'multipart/form-data' },});
       const savedMessage = res.data;
       setMessages((prev) => [...prev, savedMessage]);
       socket.emit('sendMessage', savedMessage);
