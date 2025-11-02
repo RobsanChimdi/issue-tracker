@@ -93,20 +93,6 @@ export default function Message() {
     </li>
   ))}
 </ul>
-
-
-      <h2 className="font-bold mt-6 mb-3">Start a new chat</h2>
-      <ul>
-        {users.map((user) => (
-          <div
-            key={user.id}
-            onClick={() => startConversation(user.id)}
-            className="p-3 border rounded-lg mb-3 hover:bg-gray-100 cursor-pointer"
-          >
-            <p>{user.name}</p>
-          </div>
-        ))}
-      </ul>
-    </div>
+ </div>
   );
 }
