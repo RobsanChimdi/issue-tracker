@@ -1,4 +1,4 @@
-export default function MessageBubble({ message, currentUserId }: { message: any; currentUserId: string; }) {
+export default function MessageBubble({ message, currentUserId }: { message: any; currentUserId: string|null; }) {
   const isMine = message.senderId === currentUserId;
 
   const renderAttachment = (attachment: any) => {

@@ -12,7 +12,6 @@ interface Issue {
 
 const IssuesPage = () => {
   const [issues, setIssues] = useState<Issue[]>([])
-  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     async function fetchIssues() {
@@ -24,14 +23,11 @@ const IssuesPage = () => {
       }
       catch(error){
         console.error("Error fetching issues:", error)
-      } finally {
-        setIsLoading(false)
-      }
+      } 
     }
     fetchIssues()
   }, [])
 
-  if (isLoading) return <div className="p-8 text-center text-lg">Loading issues...</div>
 
   return (
     <div className="max-w-4xl mx-auto p-8 pt-4">

@@ -29,7 +29,6 @@ interface Conversation {
 export default function ChatPage() {
   const params = useParams();
   const conversationId = params.id as string;
-
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [recipient, setRecipient] = useState<Participant | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -107,9 +106,6 @@ export default function ChatPage() {
     }
   }
 
-  if (!currentUserId) {
-    return <div className="flex flex-col h-screen justify-center items-center">Loading...</div>;
-  }
 
   return (
     <div className="flex flex-col h-screen">

@@ -13,7 +13,6 @@ interface User {
 export default function Contacts() {
   const [users, setUsers] = useState<User[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   useEffect(() => {
     async function fetchUsers() {
@@ -24,14 +23,10 @@ export default function Contacts() {
 
         const usersRes = await axios.get('/api/users');
         const allUsers: User[] = usersRes.data;
-
-        // Exclude current user from list
         setUsers(allUsers.filter(u => u.id !== userId));
       } catch (error) {
         console.error("Error fetching users:", error);
-      } finally {
-        setLoading(false);
-      }
+      } 
     }
 
     fetchUsers();
@@ -45,8 +40,6 @@ export default function Contacts() {
       console.error("Error starting conversation:", err);
     }
   };
-
-  if (loading) return <p>Loading contacts...</p>;
 
   return (
     <div className="max-w-md mx-auto bg-gray-50 p-6 rounded-lg shadow-sm">
