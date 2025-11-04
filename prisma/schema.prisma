@@ -26,6 +26,8 @@ model User {
   receivedMessages Message[]       @relation("ReceivedMessages")
   participants     Participant[]
   issues           Issues[]
+  images           Images[]
+  videos           Videos[]
 
   @@index([name]) 
   @@map("users")
@@ -107,6 +109,35 @@ model Issues {
   @@index([userId])
   @@map("issues")
 }
+model Images{
+  id Int  @id @default(autoincrement())
+  type String
+  imagename String
+  userId String  
+  imageSize Int
+  url String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+  @@map("images")
+
+}
+model Videos{
+  id Int  @id @default(autoincrement())
+  type String
+  imagename String
+  userId String  
+  imageSize Int
+  url String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+  @@map("videos")
+
+}
+
 
 model VerificationToken {
   identifier String
