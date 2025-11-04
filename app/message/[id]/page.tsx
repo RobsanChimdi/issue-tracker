@@ -97,7 +97,7 @@ export default function ChatPage() {
       formData.append("conversationId", conversationId);
       formData.append("text", text);
       if(file) formData.append("file", file)
-      const res = await axios.post('/api/messages', formData, {headers: { 'Content-Type': 'multipart/form-data' },});
+      const res = await axios.post('/api/messages', formData);
       const savedMessage = res.data;
       setMessages((prev) => [...prev, savedMessage]);
       socket.emit('sendMessage', savedMessage);

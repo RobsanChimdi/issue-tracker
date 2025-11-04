@@ -15,7 +15,25 @@ export default function MessageInput({ onSend }: MessageInputProps) {
     setFile(null);
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0] || null;
+    if (selectedFile && selectedFile.size > 10 * 1024 * 1024) {
+      alert('File size must be less than 10MB');
+      return;
+    }
+    
+    setFile(selectedFile);
+  };
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0] || null;
+    if (selectedFile && selectedFile.size > 10 * 1024 * 1024) {
+      alert('File size must be less than 10MB');
+      return;
+    }
+    
+    setFile(selectedFile);
+  };
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
     if (selectedFile && selectedFile.size > 10 * 1024 * 1024) {
       alert('File size must be less than 10MB');
@@ -42,18 +60,44 @@ export default function MessageInput({ onSend }: MessageInputProps) {
       
       <div className="flex items-center space-x-2">
         <input 
-          id="file-input" 
+          id="file-doc" 
           type="file" 
+          accept="application/pdf,.doc,.docx"
           onChange={handleFileChange}
           className="text-sm hidden"
         />
         <label 
-          htmlFor="file-input"
+          htmlFor="file-doc"
           className="cursor-pointer bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg"
         >
           📎
         </label>
-        
+        <input 
+        id="file-image" 
+        type="file" 
+        accept="image/*"
+          onChange={handleImageChange}
+          className="text-sm hidden"
+        />
+        <label 
+          htmlFor="file-image"
+          className="cursor-pointer bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg"
+        >
+        Image
+        </label>
+        <input 
+          id="file-video" 
+          type="file" 
+          accept="video/*"
+          onChange={handleVideoChange}
+          className="text-sm hidden"
+        />
+        <label 
+          htmlFor="file-video"
+          className="cursor-pointer bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg"
+        >
+        Video
+        </label>
         <input 
           value={text} 
           onChange={(e) => setText(e.target.value)} 

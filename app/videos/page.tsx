@@ -12,6 +12,7 @@ interface Video {
 
 const Page = () => {
   const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
 
   useEffect(() => {
@@ -48,16 +49,31 @@ const Page = () => {
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const selectedFile = e.target.files?.[0] || null;
-    setFile(selectedFile);
+  const selectedFile = e.target.files?.[0] || null;
+  setFile(selectedFile);
+
+  if (selectedFile) {
+    const videoUrl = URL.createObjectURL(selectedFile);
+    setPreview(videoUrl);
+  } else {
+    setPreview(null);
   }
+}
+
 
   return (
     <div className="p-6">
       <form onSubmit={handlePost}>
         {file && (
           <div className="mb-2 flex items-center gap-2">
-            <span>{file.name}</span>
+            {preview && (
+            <video
+                src={preview}
+                controls
+                width="300"
+                className="rounded-lg border border-gray-300"
+            />
+            )}
             <button
               type="button"
               onClick={() => setFile(null)}
