@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 
 const createIssueSchema = z.object({
   title: z.string().min(1, "Title is required").max(255),
-  description: z.string().min(1, "Description is required"),
+  description: z.string().min(1, "Description is required").max(5000),
 });
 
 export async function POST(request: NextRequest) {
@@ -79,12 +79,18 @@ export async function GET() {
     const issues = await prisma.issues.findMany({
       orderBy: { createdAt: "desc" },
       include: {
-        user: { select: { id: true, name: true} },
+        user: { select: { id: true, name: true } },
         images: { select: { url: true, imagename: true, createdAt: true } },
+        likes: { select: { userId: true } }
       },
     });
+    const issuesWithLikes = issues.map(issue => ({
+      ...issue,
+      likesCount: issue.likes.length,
+      likedBy: issue.likes.map(like => like.userId),
+    }));
 
-    return NextResponse.json(issues, {
+    return NextResponse.json(issuesWithLikes, {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });

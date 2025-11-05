@@ -26,6 +26,7 @@ model User {
   receivedMessages Message[]       @relation("ReceivedMessages")
   participants     Participant[]
   issues           Issues[]
+  likes            Likes[]
   images           Images[]
   videos           Videos[]
 
@@ -100,8 +101,9 @@ model Attachment {
 model Issues {
   id          Int      @id @default(autoincrement())
   title       String
-  description String
+  description String @db.Text
   images      Images[]
+  likes       Likes[]
   userId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -110,6 +112,17 @@ model Issues {
   @@index([userId])
   @@map("issues")
 }
+model Likes {
+  id       Int    @id @default(autoincrement())
+  userId   String
+  issueId  Int
+  createdAt DateTime @default(now())
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issue    Issues @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, issueId]) 
+}
+
 model Images{
   id Int  @id @default(autoincrement())
   type String

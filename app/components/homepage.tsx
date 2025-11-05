@@ -9,9 +9,14 @@ interface Image {
   name?: string
   type?: string
 }
-interface User{
-    id:string
-    name:string
+
+interface User {
+  id: string
+  name: string
+}
+
+interface Likes {
+  userId: string
 }
 
 interface Issue {
@@ -19,37 +24,72 @@ interface Issue {
   title: string
   description: string
   createdAt: string
-  user:User
+  user: User
+  likes: Likes[]
   images: Image[]
 }
 
 export const IssuesPage = () => {
   const [issues, setIssues] = useState<Issue[]>([])
-  const   [download, setDownLoad]=useState(false)
-  const [more, setMore]=useState<{[key:number]:Boolean}>({})
+  const [download, setDownLoad] = useState(false)
+  const [more, setMore] = useState<{ [key: number]: Boolean }>({})
+  const [userId, setUserId] = useState<string>("")
+
 
   useEffect(() => {
-    async function fetchIssues() {
+    async function fetchData() {
       try {
-        const res = await axios.get("/api/issues")
-        if (!res) throw new Error('Failed to fetch issues')
-        const data = await res.data
-        setIssues(data)
+        const [sessionRes, issuesRes] = await Promise.all([
+          axios.get("/api/session"),
+          axios.get("/api/issues")
+        ])
+        
+        setUserId(sessionRes.data.userId || sessionRes.data.id) 
+        setIssues(issuesRes.data)
       } catch (error) {
-        console.error("Error fetching issues:", error)
-      }
+        console.error("Error fetching data:", error)
+      } 
     }
-    fetchIssues()
+    fetchData()
   }, [])
 
-const downloadhandler=()=>{
-  if(download==false){
-  setDownLoad(true)}
-else setDownLoad(false)
-}
-const toggleDescription = (id: number) => {
-  setMore(prev => ({ ...prev, [id]: !prev[id] }));
-};
+  const downloadhandler = () => {
+    setDownLoad(prev => !prev)
+  }
+
+  const toggleDescription = (id: number) => {
+    setMore(prev => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  const isLiked = (issue: Issue) => {
+    return issue.likes.some(like => like.userId === userId)
+  }
+
+  const handleLike = async (issue: Issue) => {
+    try {
+     
+
+      if (isLiked(issue)) {
+        await axios.delete(`/api/issues/${issue.id}/like`)
+        setIssues((prev) => prev.map((i) => i.id === issue.id ? {
+          ...i,
+          likes: i.likes.filter((l) => l.userId !== userId)
+        } : i))
+      } else {
+        await axios.post(`/api/issues/${issue.id}/like`)
+        setIssues((prev) => prev.map((i) => i.id === issue.id ? {
+          ...i,
+          likes: [...i.likes, { userId }]
+        } : i))
+      }
+    } catch (error: any) {
+      console.error("Error liking/unliking:", error)
+      if (error.response?.status === 400) {
+        alert(error.response.data.message || "Already liked this post")
+      }
+    }
+  }
+
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -153,7 +193,7 @@ const toggleDescription = (id: number) => {
                   View Details
                 </Link>
                 <div className="space-x-3">
-                  <button className="hover:text-blue-600 transition-colors">👍 Like</button>
+                  <button className="hover:text-blue-600 transition-colors" onClick={()=>handleLike(issue)}>👍 {issue.likes.length}</button>
                   <button className="hover:text-blue-600 transition-colors">💬 Comment</button>
                   <button className="hover:text-blue-600 transition-colors">↗ Share</button>
                 </div>
