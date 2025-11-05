@@ -7,7 +7,7 @@ const prisma=new PrismaClient()
 
 export async function deleteIssue(issueId:number){
     try{
-        await prisma.issue.delete({
+        await prisma.issues.delete({
             where:{id:issueId}
         });
         revalidatePath("/issues")
@@ -25,13 +25,13 @@ export async function updateIssue(
     const title=formData.get("title") as string;
     const description=formData.get('description') as string;
     try{
-        await prisma.issue.update({
+        await prisma.issues.update({
             where:{
                 id:issuedId
             },
             data:{
                 title:title,
-                description:description
+                description:description,
             }
         });
         revalidatePath("/issues")

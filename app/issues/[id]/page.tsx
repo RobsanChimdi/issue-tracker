@@ -11,10 +11,18 @@ const prisma = new PrismaClient();
 interface Props {
   params: { id: string };
 }
+interface Image {
+  id: number
+  url: string
+  name?: string
+  type?: string
+}
+
 interface Issue {
     id: number;
     title: string;
     description: string;
+    images: Image[];
     status: 'OPEN' | 'IN_PROGRESS' | 'CLOSED';
     createdAt: Date;
     updatedAt: Date;
@@ -37,8 +45,20 @@ const IssueDetailPage = async ({ params }: Props) => {
     await deleteIssue(issueId);
   }
 
-    const issue = await prisma.issue.findUnique({
+    const issue = await prisma.issues.findUnique({
         where: { id: issueId },
+        include: {
+            user:{
+              select:{
+                id:true, name:true, email:true
+              }  
+            },
+            images:{
+                select:{
+                    id:true, url:true, imagename:true, imageSize:true
+                }
+            }
+        }
     }) as Issue | null;
     if (!issue) {
     
@@ -58,6 +78,13 @@ const IssueDetailPage = async ({ params }: Props) => {
                 <h1 className="text-4xl font-extrabold text-gray-900 break-words whitespace-pre-wrap">
                     {issue.title}
                 </h1>
+                <div>
+                   {
+                    issue.images.map((image)=>(
+                        <img src={image.url} key={image.id} alt="" />
+                    ))
+                   } 
+                </div>
                 <div className="mt-2 text-sm text-gray-500 flex items-center space-x-4">
                     <span>Issue #{issue.id}</span>
                     <span>•</span>

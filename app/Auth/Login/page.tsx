@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import SigninForm from '../../components/ui/signinForm';
+import SigninForm from '../../components/signinForm';
 import clsx from 'clsx'
 
 const Page = () => {

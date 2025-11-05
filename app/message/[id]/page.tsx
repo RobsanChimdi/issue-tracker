@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
 import { socket } from '@/app/lib/socket';
-import MessageInput from '@/app/components/MessageInput';
-import MessageBubble from '@/app/components/MessageBubble';
+import MessageInput from '@/app/components/ui/MessageInput';
+import MessageBubble from '@/app/components/ui/MessageBubble';
 
 interface Message {
   id: string;
