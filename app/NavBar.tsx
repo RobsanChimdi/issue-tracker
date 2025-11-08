@@ -1,37 +1,24 @@
 "use client"
 import React from 'react'
 import Link from "next/link"
-import { usePathname } from 'next/navigation'
-import classnames from "classnames"
+
 const NavBar = () => {
-    const currentPath=usePathname()
-    console.log(currentPath)
-    const links=[{
-        label:'home', href:"/"
-    },
-    {
-        label:"Issue", href:"/issues"
-    },
-    {label:"Message", href:"/message"},
-    {label:"Contacts", href:"/contacts"},
-    {label:"Videos", href:"/videos"}
-]
   return (
-    <nav className="flex space-x-10 border-b-2 border-b-slate-950 bg-stone-200 h-12 items-center">
-     <Link href="/">Logo</Link>
-     <ul className='flex space-x-6'>
-        {
-            links.map((link)=>(
-                <li key={link.href}><Link href={link.href} className={classnames({
-                    'text-zinc-900':link.href===currentPath,
-                    'text-zinc-500':link.href!==currentPath,
-                    'hover:text-zinc-800 transition-colors':true
-                })}>{link.label}</Link></li>
-            ))
-        }
-     </ul>
-     <Link href="/Auth/Login" className="right-0 absolute ">Login</Link>
-    </nav>
+    <nav className="flex items-center justify-between h-12 px-4">
+  <Link href="/" className="flex-shrink-0">
+    Logo
+  </Link>
+  <div className="flex-1 flex justify-center">
+    <input
+      type="search"
+      className="w-72 border rounded-sm px-2 py-1"
+      placeholder="🔍 Search..."
+    />
+  </div>
+  <button className="flex-shrink-0">Profile</button>
+  <Link href="/Auth/Login" className="right-0 absolute ">Login</Link>
+</nav>
+
   )
 }
 

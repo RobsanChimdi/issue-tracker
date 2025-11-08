@@ -14,8 +14,6 @@ function SigninForm() {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <form action={action} className="bg-white shadow-md rounded-2xl p-8 md:w-80 md:h-96 w-96 border border-gray-200 h-96">
         <h2 className="flex items-center justify-center text-gray-950 text-2xl mb-2">Sign In</h2>
-
-        {/* 👇 Hidden field for redirection */}
         <input type="hidden" name="returnUrl" value={returnUrl} />
 
         <div>

@@ -93,19 +93,15 @@ export const IssuesPage = () => {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-        <button className="m-4 bg-blue-600 rounded-xl">
+        <button className="m-4 rounded-xl bg-slate-100 p-6">
+          <div>
+            <Link href="" className='w-20 h-20 rounded-full mr-4 text-3xl bg-slate-600'>prof</Link>
             <Link href="/issues/new"> 
-            <input type="new issue" className="border border-slate-900 border-spacing-4 rounded-xl" />  
-            New Issue
+            <input type="new issue" placeholder='what is happening on your mind' className="border w-96 p-1 bg-slate-200  border-spacing-4 rounded-md" />  
             </Link>
+          </div>
+            
         </button>
-
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-gray-900">Feed</h1>
-        <Link href="/Auth/Signout" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold">
-          Sign Out
-        </Link>
-      </div>
       {issues.length === 0 ? (
         <p className="text-center text-gray-500 mt-10">
           No posts yet.{" "}
@@ -119,7 +115,7 @@ export const IssuesPage = () => {
           {issues.map(issue => (
             <li
               key={issue.id}
-              className="bg-slate-100 border border-gray-200 rounded-2xl p-5 shadow-sm transition-all duration-200 w-[500px] h-min-[700px]"
+              className="bg-slate-100 border border-gray-200 rounded-2xl p-5 shadow-sm transition-all duration-200 w-[500px] h-min-[700px] h-auto"
             >   
             <div className='flex flex-row space-x-80'>
              <h1>{issue.user.name}</h1> 
@@ -150,7 +146,7 @@ export const IssuesPage = () => {
                 </span>
               </div>
 
-             <p className="text-gray-700 text-[15px] mt-3 leading-relaxed">
+             <p className="text-gray-700 text-[15px] mt-3 leading-relaxed break-words whitespace-pre-line overflow-y-auto max-h-96">
               {issue.description.length > 50 ? (
                 <>
                   {more[issue.id] 

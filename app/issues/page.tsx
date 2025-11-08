@@ -90,8 +90,6 @@ const IssuesPage = () => {
                   ))}
                 </div>
               )}
-
-              {/* Footer (like / comment / share buttons later) */}
               <div className="flex justify-between items-center text-sm text-gray-500 mt-4 border-t pt-3">
                 <Link href={`/issues/${issue.id}`} className="text-blue-600 hover:underline">
                   View Details
