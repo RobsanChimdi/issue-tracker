@@ -15,8 +15,9 @@ const NavBar = () => {
       placeholder="🔍 Search..."
     />
   </div>
-  <button className="flex-shrink-0">Profile</button>
+   <Link href="/profile">Profile</Link>
   <Link href="/Auth/Login" className="right-0 absolute ">Login</Link>
+ 
 </nav>
 
   )

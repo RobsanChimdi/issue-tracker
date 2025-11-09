@@ -22,6 +22,7 @@
     "eslint-config-next": "15.4.5",
     "framer-motion": "^12.23.24",
     "jose": "^6.1.0",
+    "lucide-react": "^0.553.0",
     "multer": "^2.0.2",
     "next": "15.4.5",
     "next-auth": "^4.24.11",
