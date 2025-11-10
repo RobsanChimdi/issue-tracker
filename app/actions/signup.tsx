@@ -30,8 +30,7 @@ export async function SignUp(state: FormState, formData: FormData) {
       data: {
         name: name.trim(),
         email: email.toLowerCase().trim(),
-        password: hashedPassword,
-        
+        password: hashedPassword, 
       },
     });
 
@@ -51,6 +50,6 @@ export async function SignUp(state: FormState, formData: FormData) {
       message: "An unexpected error occurred while creating your account.",
     };
   }
-  return redirect('/Auth/Login');
+  return redirect('/Login');
 
 }

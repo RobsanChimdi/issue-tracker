@@ -79,7 +79,7 @@ export async function GET() {
     const issues = await prisma.issues.findMany({
       orderBy: { createdAt: "desc" },
       include: {
-        user: { select: { id: true, name: true } },
+        user: { select: { id: true, name: true, imageUrl:true } },
         images: { select: { url: true, imagename: true, createdAt: true } },
         likes: { select: { userId: true } }
       },

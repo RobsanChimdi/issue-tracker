@@ -47,5 +47,5 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
 
   const returnUrl = (formData.get("returnUrl") as string) || "/";
   if (returnUrl.startsWith("/")) redirect(returnUrl);
-  redirect("/");
+  redirect("/profile");
 }

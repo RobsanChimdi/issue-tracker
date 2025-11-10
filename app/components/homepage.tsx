@@ -13,6 +13,7 @@ interface Image {
 interface User {
   id: string
   name: string
+  imagUrl:string
 }
 
 interface Likes {
@@ -94,8 +95,22 @@ export const IssuesPage = () => {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
         <button className="m-4 rounded-xl bg-slate-100 p-6">
-          <div>
-            <Link href="" className='w-20 h-20 rounded-full mr-4 text-3xl bg-slate-600'>prof</Link>
+          <div className='flex flex-row' >
+             <div className='w-12 h-12 rounded-full mr-4 text-3xl bg-slate-600'>
+               <Link href="/issues/new" className='w-20 h-20 rounded-full mr-4 text-3xl bg-slate-600'>
+              {issues
+                .filter(i => i.user.id === userId)
+                .map(i => (
+                  <img
+                    key={i.id} 
+                    src={i.user.imagUrl} 
+                    alt={i.user.name}
+                    className="w-12 h-12 rounded-full"
+                  />
+                ))}
+              </Link>
+
+             </div>
             <Link href="/issues/new"> 
             <input type="new issue" placeholder='what is happening on your mind' className="border w-96 p-1 bg-slate-200  border-spacing-4 rounded-md" />  
             </Link>

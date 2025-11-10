@@ -13,7 +13,7 @@ const CreateIssuePage = () => {
   useEffect(() => {
     async function fetchIssues() {
       try {
-        const res = await axios("/api/issues");
+        const res = await axios.get("/api/issues");
         const data = await res.data;
         setIssues(data);
       } catch (error) {

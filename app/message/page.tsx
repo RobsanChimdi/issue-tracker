@@ -67,7 +67,7 @@ export default function Message() {
     }
   };
 
-  if (!currentUserId) return <p>Loading...</p>;
+  if (!currentUserId) return <p>No Users</p>;
 
   return (
     <div className="w-96 ml-100 whitespace-nowrap overflow-auto bg-slate-50 p-4">

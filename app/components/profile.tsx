@@ -2,6 +2,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Camera } from "lucide-react"; 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Image {
   userId: string;
@@ -12,18 +14,7 @@ const Profile = () => {
   const [file, setFile] = useState<File | null>(null);
   const [image, setImage] = useState<Image | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchProfileImage() {
-      try {
-        const { data } = await axios.get("/actions/profile");
-        setImage(data);
-      } catch (err) {
-        console.error("Error fetching image", err);
-      }
-    }
-    fetchProfileImage();
-  }, []);
+const router=useRouter()
 
   async function handlePost(e: React.FormEvent) {
     e.preventDefault();
@@ -34,12 +25,11 @@ const Profile = () => {
     formData.append("file", file);
 
     try {
-      const res = await axios.post("/actions/profile", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await axios.post("/api/profile", formData);
       setImage(res.data);
       setFile(null);
       setPreview(null);
+      router.push("/issues"); 
     } catch (err) {
       console.error("Error uploading image:", err);
     }
@@ -95,6 +85,7 @@ const Profile = () => {
           Upload
         </button>
       </form>
+      <Link href="/">Skip</Link>
     </div>
   );
 };
