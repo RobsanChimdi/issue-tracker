@@ -24,9 +24,9 @@ export async function decrypt(session: string | undefined = '') {
     console.log('Failed to verify session')
   }
 }
-export async function createSession(userId: string, email: string, name:string|null) {
+export async function createSession(userId: string, email: string, name:string|null, imageUrl:string) {
   const expiresAt = new Date(Date.now() + 60*60 * 1000); 
-  const session = await encrypt({ userId, email, name });
+  const session = await encrypt({ userId, email, name, imageUrl });
   const cookieStore = await cookies();
 
   cookieStore.set('auth-token', session, {
@@ -45,5 +45,5 @@ export async function getSession() {
   if (!session) return null;
 
   const payload = await decrypt(session);
-  return payload as { userId: string; email: string, name:string |null} | null;
+  return payload as { userId: string; email: string, name:string |null, imageUrl:string} | null;
 }

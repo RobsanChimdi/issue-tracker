@@ -22,7 +22,7 @@ model User {
   password         String
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
-
+  profile          Profile?
   sentMessages     Message[]       @relation("SentMessages")
   receivedMessages Message[]       @relation("ReceivedMessages")
   participants     Participant[]
@@ -30,10 +30,23 @@ model User {
   likes            Likes[]
   images           Images[]
   videos           Videos[]
+  comments         Comments[]
 
   @@index([name]) 
   @@map("users")
 }
+
+model Profile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  bio       String?
+  birthDate DateTime?
+  about     String?
+  education String?
+  maritalStatus String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 
 model Conversation {
   id             String         @id @default(cuid())
@@ -106,6 +119,7 @@ model Issues {
   description String @db.Text
   images      Images[]
   likes       Likes[]
+  comments    Comments[]
   userId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -124,7 +138,16 @@ model Likes {
 
   @@unique([userId, issueId]) 
 }
-
+model Comments{
+  id     Int  @id @default(autoincrement())
+  userId String
+  text     String
+  issueId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issue    Issues @relation(fields: [issueId], references: [id], onDelete: Cascade)
+}
 model Images{
   id Int  @id @default(autoincrement())
   type String

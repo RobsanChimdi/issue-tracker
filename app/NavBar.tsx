@@ -34,7 +34,7 @@ const NavBar = () => {
     />
   </div>
    <div className='w-12 h-12 rounded-full mr-4 bg-slate-900'>
-    <Link href="./profile" className='w-12 h-12'> <img className="w-12 h-12 rounded-full" src={image?.imageUrl}/></Link>
+    <Link href="./profile" className='w-12 h-12'>{ <img className="w-12 h-12 rounded-full" src={image?.imageUrl}/>}</Link>
   </div>
 </nav>
 
