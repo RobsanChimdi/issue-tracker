@@ -23,6 +23,7 @@ model User {
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   profile          Profile?
+  setting          Setting?
   sentMessages     Message[]       @relation("SentMessages")
   receivedMessages Message[]       @relation("ReceivedMessages")
   participants     Participant[]
@@ -178,7 +179,17 @@ model Videos {
   @@index([userId])
   @@map("videos")
 }
-
+model Setting { 
+  id String @id @default(cuid())
+   userId String @unique 
+   language String @default("English") 
+   theme String @default("light") 
+   notifications Boolean @default(true) 
+   timezone String? 
+   createdAt DateTime @default(now()) 
+   updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
+  }
 
 model VerificationToken {
   identifier String
