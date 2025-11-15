@@ -26,6 +26,7 @@ const NavBar = () => {
   <Link href="/" className="flex-shrink-0">
     Logo
   </Link>
+  
   <div className="flex-1 flex justify-center">
     <input
       type="search"

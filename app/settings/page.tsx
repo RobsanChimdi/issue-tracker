@@ -1,127 +1,76 @@
 'use client'
-
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react'
 
 interface Setting {
-  id: string
-  userId: string
-  language: string
-  theme: string
-  notifications: boolean
-  timezone?: string
+  id?: string;
+  language: string;
+  theme: 'light' | 'dark' | 'auto';
+  notifications: boolean;
+  timezone: string;
+  userId?: string;
 }
 
-const SettingsPage = () => {
-  const [setting, setSetting] = useState<Setting | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [message, setMessage] = useState('')
+const Page = () => {
+  const [notification, setNotification]=useState(false)
+  const [handler, setHandler] = useState(false)
 
-  // Fetch the current user's settings
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await axios.get('/api/settings') // call backend route
-        setSetting(response.data)
-      } catch (error) {
-        console.error('Error fetching settings:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchSettings()
-  }, [])
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    if (!setting) return
-    const { name, value, type, checked} = e.target
-    setSetting({
-      ...setting,
-      [name]: type === 'checkbox' ? checked : value,
-    })
+  const themeHandler = () => {
+    setHandler(!handler)
   }
-
-  const handleSave = async () => {
-    if (!setting) return
-    try {
-      await axios.put('/api/settings', setting)
-      setMessage('✅ Settings updated successfully!')
-    } catch (error) {
-      console.error('Error saving settings:', error)
-      setMessage('❌ Failed to update settings.')
-    }
+  const notificationHnadler = () => {
+    setNotification(!notification)
   }
-
-  if (loading) return <p>Loading...</p>
-  if (!setting) return <p>No settings found.</p>
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
-      <h1 className="text-2xl font-semibold mb-4 text-center">User Settings</h1>
+    <div className='p-10 flex  flex-col items-center '>
 
-      <div className="flex flex-col space-y-4">
-        <label className="flex flex-col">
-          Language
-          <select
-            name="language"
-            value={setting.language}
-            onChange={handleChange}
-            className="border p-2 rounded-md"
-          >
-            <option>English</option>
-            <option>Amharic</option>
-            <option>Oromo</option>
-            <option>French</option>
-          </select>
-        </label>
+      <button
+        onClick={themeHandler}
+        className="text-4xl  right-0 absolute"
+      >
+        {handler ? "💡" : "🌑"}
+      </button>
 
-        <label className="flex flex-col">
-          Theme
-          <select
-            name="theme"
-            value={setting.theme}
-            onChange={handleChange}
-            className="border p-2 rounded-md"
-          >
-            <option>light</option>
-            <option>dark</option>
-          </select>
-        </label>
-
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            name="notifications"
-            checked={setting.notifications}
-            onChange={handleChange}
-          />
-          <span>Enable Notifications</span>
-        </label>
-
-        <label className="flex flex-col">
-          Timezone
-          <input
-            type="text"
-            name="timezone"
-            value={setting.timezone || ''}
-            onChange={handleChange}
-            placeholder="e.g., Africa/Addis_Ababa"
-            className="border p-2 rounded-md"
-          />
-        </label>
-
-        <button
-          onClick={handleSave}
-          className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition"
+      <div className='mt-20 h-24  flex  items-center justify-center space-x-2' >
+        <label htmlFor="language" className='text-fuchsia-500 text-3xl'>Language :  </label><br />
+        <select
+          name="language"
+          id="language"
+          className=' p-2 rounded mt-2 w-60'
         >
-          Save Changes
-        </button>
-
-        {message && <p className="text-center text-sm mt-2">{message}</p>}
+          <option value="English">English</option>
+          <option value="A/Oromo">A/Oromoo</option>
+          <option value="Amharic">Amharic</option>
+        </select>
       </div>
+
+      <div className="mt-20 flex">
+        <span className="text-fuchsia-500 text-3xl mr-5">notification :   </span>
+        <div
+          onClick={notificationHnadler}
+          className={`w-12 h-6 flex items-center rounded-full cursor-pointer  mt-2 transition-all duration-300
+            ${notification ? "bg-green-600" : "bg-gray-400"}
+          `}
+        >
+          <div
+            className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-all duration-300
+              ${notification? "translate-x-6" : "translate-x-1"}
+            `}
+          ></div>
+        </div>
+
+      </div>
+      <div  className='mt-20 w-96'>
+        <label htmlFor="timezone" className='text-fuchsia-500 text-3xl mr-5'>Time Zone:</label>
+        <select name="timezone" id="timezone">
+          <option value="GMT">GMT</option>
+          <option value="EAT">EAT</option>
+          <option value="PST">PST</option>
+        </select>
+      </div>
+  <button className='mt-28 w-36 h-7 bg-fuchsia-500 shadow-2xl hover:bg-fuchsia-700 rounded-2xl'> Save</button>
     </div>
   )
 }
 
-export default SettingsPage
+export default Page
