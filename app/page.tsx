@@ -2,15 +2,16 @@ import Link from "next/link";
 import IssuesPage from "./components/homepage";
 import Contacts from "./contacts/page";
 import Message from "./message/page";
-import { FiSettings } from 'react-icons/fi'; // Feather icon
+import { FiSettings } from 'react-icons/fi'; 
 
 export default function Home() {
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       <div className="flex flex-col w-1/5 bg-slate-50 p-4">
         <div className="flex flex-col space-y-2 mb-4">
           <Link href="/">Oduu</Link>
           <Link href="/videos">Videos</Link>
+          <Link href="/message"> Messages</Link>
           
         </div>
         <div className="flex-1">

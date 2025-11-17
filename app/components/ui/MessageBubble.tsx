@@ -1,5 +1,21 @@
-export default function MessageBubble({ message, currentUserId }: { message: any; currentUserId: string|null; }) {
+import { DateTime } from "luxon";
+
+export default function MessageBubble({
+  message,
+  currentUserId,
+  timezone = "Africa/Addis_Ababa" // default timezone
+}: { 
+  message: any; 
+  currentUserId: string | null; 
+  timezone?: string;
+}) {
   const isMine = message.senderId === currentUserId;
+
+  const localTime = message.createdAt
+    ? DateTime.fromISO(message.createdAt)
+        .setZone(timezone)
+        .toFormat("yyyy-MM-dd HH:mm")
+    : "";
 
   const renderAttachment = (attachment: any) => {
     const url = attachment.url;
@@ -51,7 +67,7 @@ export default function MessageBubble({ message, currentUserId }: { message: any
 
   return (
     <div className={`flex ${isMine ? 'justify-end' : 'justify-start'} mb-3`}>
-      <div className={`max-w-md px-1 py-1 rounded-xl ${
+      <div className={`max-w-md px-2 py-1 rounded-xl ${
         isMine ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-200 rounded-bl-none'
       }`}>
         {message.attachments && message.attachments.map((attachment: any) => (
@@ -60,6 +76,8 @@ export default function MessageBubble({ message, currentUserId }: { message: any
           </div>
         ))}
         {message.text && <p className={isMine ? 'text-white' : 'text-black'}>{message.text}</p>}
+
+        {localTime && <div className="text-xs text-gray-400 mt-1 text-right">{localTime}</div>}
       </div>
     </div>
   );

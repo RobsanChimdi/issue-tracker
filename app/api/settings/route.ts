@@ -4,7 +4,6 @@ import { getSession } from '@/app/lib/session'
 
 const prisma = new PrismaClient()
 
-// ========================= POST =========================
 export async function POST(req: Request) {
   try {
     const session = await getSession()
@@ -38,7 +37,6 @@ export async function POST(req: Request) {
   }
 }
 
-// ========================= GET =========================
 export async function GET() {
   try {
     const session = await getSession()
@@ -59,8 +57,6 @@ export async function GET() {
   }
 }
 
-// ========================= PUT =========================
-// User cannot include userId — we take it from session
 export async function PUT(req: Request) {
   try {
     const session = await getSession()

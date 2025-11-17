@@ -1,0 +1,10 @@
+{
+  "settings": "Settings",
+  "theme": "Theme",
+  "language": "Language",
+  "notifications": "Notifications",
+  "timezone": "Time Zone",
+  "save": "Save Settings",
+  "loading": "Loading settings..."
+  
+}
