@@ -17,9 +17,11 @@ model User {
   id               String          @id @default(cuid())
   name             String
   imageUrl         String?         @unique
-  email            String          @unique
-  emailVerified    DateTime?
+  email            String   @unique
   password         String
+  verified         Boolean  @default(false)
+  verificationToken String?
+  verificationExpires DateTime?
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   profile          Profile?

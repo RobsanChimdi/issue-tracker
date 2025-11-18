@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 import { FormState, SignUpFormSchema } from "../../lib/definitions";
 import { redirect } from "next/navigation";
+import { sendVerificationEmail } from "../../lib/mail";
 
 const prisma = new PrismaClient();
 
@@ -22,34 +23,32 @@ export async function SignUp(state: FormState, formData: FormData) {
     };
   }
 
-  const {name, email, password } = validatedFields.data;
+  const { name, email, password } = validatedFields.data;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const createdUser = await prisma.user.create({
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    await prisma.user.create({
       data: {
         name: name.trim(),
         email: email.toLowerCase().trim(),
-        password: hashedPassword, 
+        password: hashedPassword,
+        verified: false,
+        verificationToken: verificationCode,
+        verificationExpires: new Date(Date.now() + 1000 * 60 * 10), 
       },
     });
-
-    if (!createdUser) {
-      return {
-        message: "An error occurred while creating your account.",
-      };
-    }
+    await sendVerificationEmail(email, verificationCode);
 
   } catch (error: any) {
     console.error("Signup error:", error);
     if (error.code === "P2002") {
       return { message: "This email is already registered." };
     }
-
-    return {
-      message: "An unexpected error occurred while creating your account.",
-    };
+    return { message: "An unexpected error occurred while creating your account." };
   }
-  return redirect('/Auth/Login');
 
+  return redirect(`/Auth/Verify?email=${email}`);
 }
+``

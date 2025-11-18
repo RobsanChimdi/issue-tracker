@@ -38,7 +38,7 @@ function SigninForm() {
 
         {state?.message && <p className="text-sm mt-2">{state.message}</p>}
 
-        <Link href="/SignUp" className="text-fuchsia-800">Sign Up</Link>
+        <Link href="/Signup" className="text-fuchsia-800">Sign Up</Link>
       </form>
     </div>
   );
