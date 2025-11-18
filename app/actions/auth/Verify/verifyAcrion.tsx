@@ -4,14 +4,16 @@ import { redirect } from "next/navigation";
 
 const prisma = new PrismaClient();
 
-export async function verifyEmail(formData: FormData) {
+export async function verifyEmail(prevState: any, formData: FormData) {
   const code = formData.get("code") as string;
 
   const user = await prisma.user.findFirst({
     where: { verificationToken: code },
   });
 
-  if (!user) return { message: "Invalid verification code." };
+  if (!user) {
+    return { message: "Invalid verification code." };
+  }
 
   if (user.verificationExpires! < new Date()) {
     return { message: "Verification code expired." };
@@ -26,5 +28,5 @@ export async function verifyEmail(formData: FormData) {
     },
   });
 
-  return redirect("/Auth/Login");
+  redirect("/Auth/Login");
 }
