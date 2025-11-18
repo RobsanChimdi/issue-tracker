@@ -1,5 +1,5 @@
 'use client';
-import { login } from '@/app/actions/login';
+import { login } from '@/app/actions/auth/login';
 import React, { useActionState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -38,7 +38,7 @@ function SigninForm() {
 
         {state?.message && <p className="text-sm mt-2">{state.message}</p>}
 
-        <Link href="/Auth/SignUp" className="text-fuchsia-800">Sign Up</Link>
+        <Link href="/SignUp" className="text-fuchsia-800">Sign Up</Link>
       </form>
     </div>
   );

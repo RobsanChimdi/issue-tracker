@@ -1,5 +1,5 @@
 import Link from "next/link";
-import IssuesPage from "./components/homepage";
+import IssuesPage from "./components/IssuesList";
 import Contacts from "./contacts/page";
 import Message from "./message/page";
 import { FiSettings } from 'react-icons/fi'; 

@@ -3,9 +3,9 @@
 import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
 import React from 'react';
-import { deleteIssue, updateIssue } from "@/app/actions/deletionAnd Updation";
-import { DeleteB } from "../../components/ui/delete";
-import { UpdatePop } from "../../components/ui/updateval";
+import { deleteIssue } from "@/app/actions/issues/deletion";
+import {DeleteB} from "../../components/ui/DeleteButton";
+import { UpdatePop } from "../../components/ui/UpdatePopUp"
 const prisma = new PrismaClient();
 
 interface Props {

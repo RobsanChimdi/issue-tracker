@@ -2,10 +2,10 @@
 
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { createSession } from "../lib/session";
+import { createSession } from "../../lib/session";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import type { FormState } from "../lib/definitions";
+import type { FormState } from "../../lib/definitions";
 
 const prisma = new PrismaClient();
 
@@ -43,7 +43,7 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
     return { errors: { email: [""], password: [""] }, message: "Invalid email or password" };
   }
 
-  await createSession(String(user.id), user.email,user.name );
+  await createSession(String(user.id), user.email,user.name);
 
   const returnUrl = (formData.get("returnUrl") as string) || "/";
   if (returnUrl.startsWith("/")) redirect(returnUrl);

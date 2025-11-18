@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 export default function MessageBubble({
   message,
   currentUserId,
-  timezone = "Africa/Addis_Ababa" // default timezone
+  timezone = "Africa/Addis_Ababa" 
 }: { 
   message: any; 
   currentUserId: string | null; 

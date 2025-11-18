@@ -15,7 +15,6 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   const [language, setLanguage] = useState("English");
   const [translations, setTranslations] = useState<any>({});
 
-  // Load initial language from DB
   useEffect(() => {
     async function loadFromDB() {
       try {
@@ -28,7 +27,6 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     loadFromDB();
   }, []);
 
-  // Load translation file when language changes
   useEffect(() => {
     loadTranslations(language);
   }, [language]);

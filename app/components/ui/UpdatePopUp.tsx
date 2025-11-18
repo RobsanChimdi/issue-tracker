@@ -1,5 +1,5 @@
 'use client'
-import { Update } from "./update";
+import { Update } from "./UpdateIssue";
 import { useState } from "react";
 
 interface UpdatePopProps {

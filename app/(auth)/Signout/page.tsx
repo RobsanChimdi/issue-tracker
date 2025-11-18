@@ -1,4 +1,4 @@
-import SignoutPage from '@/app/components/signoutform'
+import SignoutPage from '@/app/components/SignoutForm'
 import React from 'react'
 
 const page = () => {

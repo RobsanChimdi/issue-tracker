@@ -1,4 +1,5 @@
-import { updateIssue } from "@/app/actions/deletionAnd Updation";
+import { updateIssue } from "@/app/actions/issues/update";
+import React from "react";
 import { startTransition, useTransition } from "react";
 interface UpdateProps {
   id: number;

@@ -5,19 +5,6 @@ import { redirect } from 'next/navigation';
 
 const prisma=new PrismaClient()
 
-export async function deleteIssue(issueId:number){
-    try{
-        await prisma.issues.delete({
-            where:{id:issueId}
-        });
-        revalidatePath("/issues")
-        redirect("/issues")
-    }
-    catch(error){
-        return{
-            message:"unkown error"+error
-    }
-}}
 export async function updateIssue(
     issuedId:number,
     formData:FormData

@@ -1,6 +1,6 @@
 'use client'
 import { useActionState } from "react";
-import {Logout} from "@/app/actions/logout"; 
+import {Logout} from "@/app/actions/auth/logout"; 
 
 export default function SignoutPage(){
     const [state, action, pending] = useActionState(Logout, undefined)

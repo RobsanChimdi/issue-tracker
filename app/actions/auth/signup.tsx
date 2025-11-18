@@ -1,7 +1,7 @@
 'use server'
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
-import { FormState, SignUpFormSchema } from "../lib/definitions";
+import { FormState, SignUpFormSchema } from "../../lib/definitions";
 import { redirect } from "next/navigation";
 
 const prisma = new PrismaClient();

@@ -1,5 +1,5 @@
 "use client";
-import { SignUp } from "@/app/actions/signup";
+import { SignUp } from "@/app/actions/auth/signup";
 import Link from "next/link";
 import { useActionState } from "react";
 
@@ -86,7 +86,7 @@ export const Signup = () => {
         </button>
         <p className="text-sm text-center text-gray-500 mt-4">
           Already have an account?{" "}
-          <Link href="/Auth/Login" className="text-fuchsia-800 hover:underline">
+          <Link href="/Login" className="text-fuchsia-800 hover:underline">
             Sign In
           </Link>
         </p>

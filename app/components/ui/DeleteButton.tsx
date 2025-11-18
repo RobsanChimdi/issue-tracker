@@ -1,7 +1,7 @@
 'use client';
 
 import { useTransition } from 'react';
-import { deleteIssue } from '@/app/actions/deletionAnd Updation';
+import { deleteIssue } from '@/app/actions/issues/deletion';
 
 export function DeleteB({ id }: { id: number }) {
   const [isPending, startTransition] = useTransition();
