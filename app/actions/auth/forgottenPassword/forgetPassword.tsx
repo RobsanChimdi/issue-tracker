@@ -12,8 +12,8 @@ export async function sendResetPasswordEmailAction(state: any, data: FormData) {
   const message = "If that email is registered, a password reset link has been sent.";
   if (!user) return { message };
 
-  const resetToken = crypto.randomBytes(32).toString("hex"); // secure token
-  const resetExpires = new Date(Date.now() + 1000 * 60 * 15); // 15 minutes
+  const resetToken = crypto.randomBytes(32).toString("hex"); 
+  const resetExpires = new Date(Date.now() + 1000 * 60 * 15); 
 
   await prisma.user.update({
     where: { id: user.id },

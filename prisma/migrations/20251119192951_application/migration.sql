@@ -8,6 +8,8 @@ CREATE TABLE `users` (
     `verified` BOOLEAN NOT NULL DEFAULT false,
     `verificationToken` VARCHAR(191) NULL,
     `verificationExpires` DATETIME(3) NULL,
+    `resetToken` VARCHAR(191) NULL,
+    `resetExpires` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -28,6 +30,21 @@ CREATE TABLE `Profile` (
     `maritalStatus` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Profile_userId_key`(`userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Setting` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `language` VARCHAR(191) NOT NULL DEFAULT 'English',
+    `theme` VARCHAR(191) NOT NULL DEFAULT 'light',
+    `notifications` BOOLEAN NOT NULL DEFAULT true,
+    `timezone` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Setting_userId_key`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -103,22 +120,22 @@ CREATE TABLE `issues` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Likes` (
+CREATE TABLE `Like` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` VARCHAR(191) NOT NULL,
     `issueId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `Likes_userId_issueId_key`(`userId`, `issueId`),
+    UNIQUE INDEX `Like_userId_issueId_key`(`userId`, `issueId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Comments` (
+CREATE TABLE `Comment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` VARCHAR(191) NOT NULL,
-    `text` VARCHAR(191) NOT NULL,
     `issueId` INTEGER NOT NULL,
+    `text` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -131,9 +148,9 @@ CREATE TABLE `images` (
     `type` VARCHAR(191) NOT NULL,
     `imagename` VARCHAR(191) NULL,
     `userId` VARCHAR(191) NOT NULL,
+    `issueId` INTEGER NULL,
     `imageSize` INTEGER NULL,
     `url` VARCHAR(191) NULL,
-    `issueId` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -157,21 +174,6 @@ CREATE TABLE `videos` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Setting` (
-    `id` VARCHAR(191) NOT NULL,
-    `userId` VARCHAR(191) NOT NULL,
-    `language` VARCHAR(191) NOT NULL DEFAULT 'English',
-    `theme` VARCHAR(191) NOT NULL DEFAULT 'light',
-    `notifications` BOOLEAN NOT NULL DEFAULT true,
-    `timezone` VARCHAR(191) NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
-
-    UNIQUE INDEX `Setting_userId_key`(`userId`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `verificationtokens` (
     `identifier` VARCHAR(191) NOT NULL,
     `token` VARCHAR(191) NOT NULL,
@@ -183,6 +185,9 @@ CREATE TABLE `verificationtokens` (
 
 -- AddForeignKey
 ALTER TABLE `Profile` ADD CONSTRAINT `Profile_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Setting` ADD CONSTRAINT `Setting_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `conversations` ADD CONSTRAINT `conversations_lastMessageId_fkey` FOREIGN KEY (`lastMessageId`) REFERENCES `messages`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -209,16 +214,16 @@ ALTER TABLE `attachments` ADD CONSTRAINT `attachments_messageId_fkey` FOREIGN KE
 ALTER TABLE `issues` ADD CONSTRAINT `issues_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Likes` ADD CONSTRAINT `Likes_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Like` ADD CONSTRAINT `Like_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Likes` ADD CONSTRAINT `Likes_issueId_fkey` FOREIGN KEY (`issueId`) REFERENCES `issues`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Like` ADD CONSTRAINT `Like_issueId_fkey` FOREIGN KEY (`issueId`) REFERENCES `issues`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Comments` ADD CONSTRAINT `Comments_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Comment` ADD CONSTRAINT `Comment_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Comments` ADD CONSTRAINT `Comments_issueId_fkey` FOREIGN KEY (`issueId`) REFERENCES `issues`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Comment` ADD CONSTRAINT `Comment_issueId_fkey` FOREIGN KEY (`issueId`) REFERENCES `issues`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `images` ADD CONSTRAINT `images_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -228,6 +233,3 @@ ALTER TABLE `images` ADD CONSTRAINT `images_issueId_fkey` FOREIGN KEY (`issueId`
 
 -- AddForeignKey
 ALTER TABLE `videos` ADD CONSTRAINT `videos_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Setting` ADD CONSTRAINT `Setting_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

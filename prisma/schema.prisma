@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -14,184 +14,199 @@ enum Role {
 }
 
 model User {
-  id               String          @id @default(cuid())
-  name             String
-  imageUrl         String?         @unique
-  email            String   @unique
-  password         String
-  verified         Boolean  @default(false)
-  verificationToken String?
+  id                 String      @id @default(cuid())
+  name               String
+  imageUrl           String?     @unique
+  email              String      @unique
+  password           String
+  verified           Boolean     @default(false)
+  verificationToken  String?
   verificationExpires DateTime?
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  profile          Profile?
-  setting          Setting?
-  sentMessages     Message[]       @relation("SentMessages")
-  receivedMessages Message[]       @relation("ReceivedMessages")
-  participants     Participant[]
-  issues           Issues[]
-  likes            Likes[]
-  images           Images[]
-  videos           Videos[]
-  comments         Comments[]
+  resetToken         String?
+  resetExpires       DateTime?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
 
-  @@index([name]) 
+  profile            Profile?
+  setting            Setting?
+  sentMessages       Message[]   @relation("SentMessages")
+  receivedMessages   Message[]   @relation("ReceivedMessages")
+  participants       Participant[]
+  issues             Issue[]
+  likes              Like[]
+  images             Image[]
+  videos             Video[]
+  comments           Comment[]
+
+  @@index([name])
   @@map("users")
 }
 
 model Profile {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  bio       String?
-  birthDate DateTime?
-  about     String?
-  education String?
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  bio          String?
+  birthDate    DateTime?
+  about        String?
+  education    String?
   maritalStatus String?
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Setting {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  language      String   @default("English")
+  theme         String   @default("light")
+  notifications Boolean  @default(true)
+  timezone      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
 model Conversation {
-  id             String         @id @default(cuid())
-  isGroup        Boolean        @default(false)
-  name           String?      
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id            String       @id @default(cuid())
+  isGroup       Boolean      @default(false)
+  name          String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
-  messages       Message[]
-  participants   Participant[]
-  lastMessageId  String?   @unique 
-  lastMessage    Message?       @relation("ConversationLastMessage", fields: [lastMessageId], references: [id])
+  messages      Message[]
+  participants  Participant[]
+  lastMessageId String?      @unique
+  lastMessage   Message?     @relation("ConversationLastMessage", fields: [lastMessageId], references: [id])
 
   @@map("conversations")
 }
 
 model Participant {
-  id               String         @id @default(cuid())
-  userId           String
-  conversationId   String
-  unreadCount      Int            @default(0)
-  joinedAt         DateTime       @default(now())
-  role             Role           @default(MEMBER) 
-  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  conversation     Conversation   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  id             String       @id @default(cuid())
+  userId         String
+  conversationId String
+  unreadCount    Int          @default(0)
+  joinedAt       DateTime     @default(now())
+  role           Role         @default(MEMBER)
+
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@unique([conversationId, userId])
   @@map("participants")
 }
 
 model Message {
-  id              String         @id @default(uuid())
-  text            String?    
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  delivered       Boolean        @default(false)
-  read            Boolean        @default(false)
-  hasAttachment   Boolean        @default(false) 
-  attachments     Attachment[]   
-  senderId        String
-  recipientId     String?
-  conversationId  String
-  sender          User           @relation("SentMessages", fields: [senderId], references: [id])
-  recipient       User?          @relation("ReceivedMessages", fields: [recipientId], references: [id])
-  conversation    Conversation   @relation(fields: [conversationId], references: [id])
+  id                    String        @id @default(uuid())
+  text                  String?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  delivered             Boolean       @default(false)
+  read                  Boolean       @default(false)
+  hasAttachment         Boolean       @default(false)
+  attachments           Attachment[]
+  senderId              String
+  recipientId           String?
+  conversationId        String
+  sender                User          @relation("SentMessages", fields: [senderId], references: [id])
+  recipient             User?         @relation("ReceivedMessages", fields: [recipientId], references: [id])
+  conversation          Conversation  @relation(fields: [conversationId], references: [id])
   conversationAsLastMessage Conversation? @relation("ConversationLastMessage")
 
   @@index([conversationId])
   @@index([senderId])
   @@map("messages")
 }
-model Attachment {
-  id          String    @id @default(cuid())
-  messageId   String
-  type        String  
-  url         String  
-  fileName    String?   
-  fileSize    Int       
-  createdAt   DateTime  @default(now())
 
-  message     Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+model Attachment {
+  id        String   @id @default(cuid())
+  messageId String
+  type      String
+  url       String
+  fileName  String?
+  fileSize  Int
+  createdAt DateTime @default(now())
+
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
   @@index([messageId])
   @@map("attachments")
 }
 
-model Issues {
-  id          Int      @id @default(autoincrement())
+model Issue {
+  id          Int       @id @default(autoincrement())
   title       String
-  description String @db.Text
-  images      Images[]
-  likes       Likes[]
-  comments    Comments[]
+  description String    @db.Text
   userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  images      Image[]
+  likes       Like[]
+  comments    Comment[]
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("issues")
 }
-model Likes {
-  id       Int    @id @default(autoincrement())
-  userId   String
-  issueId  Int
-  createdAt DateTime @default(now())
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  issue    Issues @relation(fields: [issueId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, issueId]) 
+model Like {
+  id        Int    @id @default(autoincrement())
+  userId    String
+  issueId   Int
+  createdAt DateTime @default(now())
+
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issue     Issue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, issueId])
 }
-model Comments{
-  id     Int  @id @default(autoincrement())
-  userId String
-  text     String
-  issueId  Int
+
+model Comment {
+  id        Int     @id @default(autoincrement())
+  userId    String
+  issueId   Int
+  text      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  issue    Issues @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issue     Issue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
 }
-model Images{
-  id Int  @id @default(autoincrement())
-  type String
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  type      String
   imagename String?
-  userId String  
+  userId    String
+  issueId   Int?
   imageSize Int?
-  url String?
-  issueId Int?
+  url       String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  issue Issues? @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issue     Issue?   @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@map("images")
-
 }
-model Videos {
-  id          Int      @id @default(autoincrement())
-  type        String
-  videoname   String
-  userId      String  
-  videoSize   Int
-  url         String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+model Video {
+  id        Int      @id @default(autoincrement())
+  type      String
+  videoname String
+  userId    String
+  videoSize Int
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("videos")
 }
-model Setting { 
-  id String @id @default(cuid())
-   userId String @unique 
-   language String @default("English") 
-   theme String @default("light") 
-   notifications Boolean @default(true) 
-   timezone String? 
-   createdAt DateTime @default(now()) 
-   updatedAt DateTime @updatedAt
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
-  }
 
 model VerificationToken {
   identifier String
