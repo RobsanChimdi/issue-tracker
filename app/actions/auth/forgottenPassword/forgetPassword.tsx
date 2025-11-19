@@ -9,7 +9,7 @@ export async function sendResetPasswordEmailAction(state: any, data: FormData) {
 
   const user = await prisma.user.findUnique({ where: { email } });
 
-  const message = "If that email is registered, a password reset link has been sent.";
+  const message = "You have not signed up with this email address.";
   if (!user) return { message };
 
   const resetToken = crypto.randomBytes(32).toString("hex"); 

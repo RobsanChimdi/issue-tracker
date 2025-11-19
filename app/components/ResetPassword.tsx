@@ -1,16 +1,23 @@
 "use client";
 
 import React from "react";
-import { useSearchParams } from "next/navigation";
-import { useActionState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useActionState , useState, useEffect} from "react";
 import { resetPasswordAction } from "@/app/actions/auth/forgottenPassword/resetPassword";
 
 const ResetPassword = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const token = searchParams.get("token") || "";
-  const [newPassword, setNewPassword] = React.useState("");
-  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] =useState("");
   const [state, action, pending] = useActionState(resetPasswordAction, undefined);
+
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/Login");
+    }
+  }, [state]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -53,7 +60,6 @@ const ResetPassword = () => {
           >
             {pending ? "Resetting..." : "Reset Password"}
           </button>
-          {state?.message && <p className="text-green-600 text-center mt-2">{state.message}</p>}
           {state?.error && <p className="text-red-600 text-center mt-2">{state.error}</p>}
         </form>
       </div>

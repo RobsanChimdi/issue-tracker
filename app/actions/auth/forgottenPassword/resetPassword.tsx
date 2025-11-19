@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
@@ -33,6 +34,5 @@ export async function resetPasswordAction(state: any, data: FormData) {
       resetExpires: null,
     },
   });
-
-  return { message: "Password has been reset successfully." };
+return {success:true}
 }
