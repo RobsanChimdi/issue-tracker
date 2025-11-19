@@ -43,7 +43,12 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return { errors: { email: [""], password: [""] }, message: "Invalid email or password" };
   }
-
+  const verify=await prisma.user.findUnique({
+    where:{verified:true,email:email}
+  });
+  if(!verify){
+    return { message: "Please verify your email before logging in." };
+  }
   await createSession(String(user.id), user.email,user.name);
 
   const returnUrl = (formData.get("returnUrl") as string) || "/";
