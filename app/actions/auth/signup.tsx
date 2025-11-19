@@ -49,6 +49,6 @@ export async function SignUp(state: FormState, formData: FormData) {
     return { message: "An unexpected error occurred while creating your account." };
   }
 
-  return redirect(`/Auth/Verify?email=${email}`);
+  return redirect(`/Verify?email=${email}`);
 }
 ``

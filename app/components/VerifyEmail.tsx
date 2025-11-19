@@ -10,7 +10,7 @@ export default function VerifyPage() {
 
   const [state, formAction] = useFormState(verifyEmail, initialState);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState(""); // pass email through URL
+  const [email, setEmail] = useState(""); 
 
   async function handleResend() {
     setLoading(true);
@@ -35,12 +35,12 @@ export default function VerifyPage() {
             maxLength={6}
             placeholder="Enter verification code"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg
-                       focus:ring-2 focus:ring-blue-500 text-center text-lg"
+                       focus:ring-2 focus:bg-fuchsia-600 text-center text-lg"
           />
 
           <button
             type="submit"
-            className="py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="py-3 bg-fuchsia-700 text-white rounded-lg hover:bg-fuchsia-900"
           >
             Verify
           </button>

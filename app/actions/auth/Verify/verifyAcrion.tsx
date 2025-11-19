@@ -28,5 +28,5 @@ export async function verifyEmail(prevState: any, formData: FormData) {
     },
   });
 
-  redirect("/Auth/Login");
+  redirect("/Login");
 }

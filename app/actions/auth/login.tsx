@@ -36,7 +36,8 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
   const { email, password } = validated.data;
 
   const user = await prisma.user.findUnique({
-    where: { email: email.toLowerCase().trim() },
+    where: { email: email.toLowerCase().trim(),
+     },
   });
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
