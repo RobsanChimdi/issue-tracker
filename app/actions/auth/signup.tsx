@@ -41,8 +41,8 @@ export async function SignUp(state: FormState, formData: FormData) {
 
     // Separate try/catch for email
     try {
-      await sendVerificationEmail(email, verificationCode);
-      return { success: true, message: `Verification code sent to ${email}. Please check your inbox.` };
+      await sendVerificationEmail(email, verificationCode, name.trim());
+      return { success: true, message: `Verification code sent to <p styel= "color:blue">${email}</p>. Please check your inbox.` };
     } catch (emailError) {
       console.error("Email sending failed:", emailError);
       return { 

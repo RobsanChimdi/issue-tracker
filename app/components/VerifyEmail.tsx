@@ -1,5 +1,5 @@
 'use client'
-import { verifyEmail } from "@/app/actions/auth/Verify/verifyAcrion";
+import { verifyEmail } from "@/app/actions/auth/Verify/verifyAction";
 import { resendVerification } from "@/app/actions/auth/Verify/resendVerification";
 import { useFormState } from "react-dom";
 import { useState } from "react";
