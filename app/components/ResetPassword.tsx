@@ -37,7 +37,7 @@ const ResetPassword = () => {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
             />
           </div>
           <div>
@@ -48,14 +48,14 @@ const ResetPassword = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
             />
           </div>
           <button
             type="submit"
             disabled={pending}
             className={`w-full py-2 px-4 rounded-lg text-white font-medium ${
-              pending ? "bg-indigo-300 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"
+              pending ? "bg-fuchsia-300 cursor-not-allowed" : "bg-fuchsia-500 hover:bg-fuchsia-700"
             }`}
           >
             {pending ? "Resetting..." : "Reset Password"}

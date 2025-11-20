@@ -27,7 +27,7 @@ export const Signup = () => {
             name="name"
             type="text"
             placeholder="Your Name"
-            className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fuchsia-500 focus:outline-none"
           />
           {state?.errors?.name && (
             <p className="text-sm text-red-500 mt-1">{state.errors.name[0]}</p>
@@ -46,7 +46,7 @@ export const Signup = () => {
             name="email"
             type="email"
             placeholder="you@example.com"
-            className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fuchsia-500 focus:outline-none"
           />
           {state?.errors?.email && (
             <p className="text-sm text-red-500 mt-1">{state.errors.email[0]}</p>
@@ -64,7 +64,7 @@ export const Signup = () => {
             name="password"
             type="password"
             placeholder="********"
-            className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fuchsia-500 focus:outline-none"
           />
           {state?.errors?.password && (
             <div className="mt-2 text-sm text-red-500">
@@ -90,6 +90,13 @@ export const Signup = () => {
             Sign In
           </Link>
         </p>
+        {state?.error && (
+        <p className="text-sm text-center text-red-600 mt-2">{state.error}</p>
+      )}
+      {state?.message && (
+        <p className="text-sm text-center text-green-600 mt-2">{state.message}</p>
+      )}
+
       </form>
     </div>
   );
