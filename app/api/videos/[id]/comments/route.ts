@@ -20,10 +20,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json(validation.error.format(), { status: 400 });
     }
     const {text}=validation.data
-    const issueId = parseInt(params.id);
-   const comment=await prisma.comments.create({
+    const videoId = parseInt(params.id);
+   const comment=await prisma.comment.create({
        data:{
-        issueId,
+        videoId,
         userId:session.userId,
         text:text
        },

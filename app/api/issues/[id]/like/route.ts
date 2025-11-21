@@ -13,7 +13,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     const issueId = parseInt(params.id);
 
-    const existing = await prisma.likes.findUnique({
+    const existing = await prisma.like.findUnique({
       where: { userId_issueId: { userId: session.userId, issueId } },
     });
 
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ message: "Already liked" }, { status: 400 });
     }
 
-    const like = await prisma.likes.create({
+    const like = await prisma.like.create({
       data: { userId: session.userId, issueId },
     });
 
@@ -39,7 +39,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 
     const issueId = parseInt(params.id);
 
-    await prisma.likes.delete({
+    await prisma.like.delete({
       where: { userId_issueId: { userId: session.userId, issueId } },
     });
 
