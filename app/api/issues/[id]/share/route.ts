@@ -4,19 +4,18 @@ const prisma= new PrismaClient();
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
-  const { userId } = await request.json();
-    try {
-    const sharedIssue = await prisma.issue.update({
-      where: { id: Number(id) },
-      data: {
-        shared: {
-          create: { posetrId: userId, sharerId: userId }
-        }
+  const { sharerId } = await request.json();
+    const issueId = parseInt(id);
+    const posterId = await prisma.issue.findUnique({
+        where: { id: issueId },
+        select: { userId: true },
+    });
+    const share = await prisma.share.create({
+        data: {
+            postId: issueId,
+            sharerId: sharerId,
+            posterId: posterId?.userId || "",
         },
     });
-    return new Response(JSON.stringify(sharedIssue), { status: 200 });
-  } catch (error) {
-    console.error("Error sharing issue:", error);
-    return new Response("Error sharing issue", { status: 500 });
-  }
+    return new Response(JSON.stringify(share), { status: 201 });
 }

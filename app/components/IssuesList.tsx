@@ -28,7 +28,7 @@ interface Likes {
 
 interface Shares{
   id:number
-  posetrId:string
+  posterId:string
   sharerId:string
 }
 
@@ -74,13 +74,16 @@ const IssuesPage = () => {
 
   const HandleShare = async (issueId: number) => {
     try {
-      await axios.post(`/api/issues/${issueId}/share`, { userId });
+      await axios.post(`/api/issues/${issueId}/share`, {sharerId: userId });
       setIssues((prev) =>
         prev.map((issue) =>
           issue.id === issueId ? {
             ...issue,
-            shared: [...issue.shared, { id: Date.now(), posetrId: issue.user.id, sharerId: userId }]
-          } : issue
+            shared: [...issue.shared, { 
+                     id: Date.now(), 
+                     posterId: issue.user.id, 
+                     sharerId: userId 
+                      }]   } : issue
         ))
     } catch (error) {
       console.log("Share error:", error);

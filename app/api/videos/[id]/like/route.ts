@@ -14,7 +14,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const videoId = parseInt(params.id);
 
     const existing = await prisma.like.findUnique({
-      where: { userId_issueId: { userId: session.userId, videoId } },
+      where: { userId_videoId: { userId: session.userId, videoId} },
     });
 
     if (existing) {
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 
     const like = await prisma.like.create({
-      data: { userId: session.userId, videoId },
+      data: { userId: session.userId, videoId , issueId: null},
     });
 
     return NextResponse.json(like, { status: 201 });

@@ -22,7 +22,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 
     const like = await prisma.like.create({
-      data: { userId: session.userId, issueId },
+      data: { userId: session.userId, issueId, videoId: null },
     });
 
     return NextResponse.json(like, { status: 201 });

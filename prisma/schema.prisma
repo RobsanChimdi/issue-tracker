@@ -154,13 +154,13 @@ model Issue {
 model Like {
   id        Int    @id @default(autoincrement())
   userId    String
-  issueId   Int
-  videoId   Int
+  issueId   Int?
+  videoId   Int?
   createdAt DateTime @default(now())
 
   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  video     Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  issue     Issue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  video     Video?  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  issue     Issue?  @relation(fields: [issueId], references: [id], onDelete: Cascade)
 
   @@unique([userId, issueId])
 }
@@ -168,15 +168,15 @@ model Like {
 model Comment {
   id        Int     @id @default(autoincrement())
   userId    String
-  issueId   Int
+  issueId   Int?
   text      String
-  videoId   Int
+  videoId   Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  video     Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  issue     Issue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  video     Video?  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  issue     Issue?  @relation(fields: [issueId], references: [id], onDelete: Cascade)
 }
 
 model Image {

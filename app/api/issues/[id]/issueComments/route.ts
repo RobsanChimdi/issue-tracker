@@ -23,9 +23,11 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const issueId = parseInt(params.id);
    const comment=await prisma.comment.create({
        data:{
-        issueId|,
+        issueId:issueId,
         userId:session.userId,
-        text:text
+        text:text,
+        videoId:null,
+        
        },
        include: { user: true },
    })

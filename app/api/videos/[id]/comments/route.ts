@@ -25,7 +25,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
        data:{
         videoId,
         userId:session.userId,
-        text:text
+        text:text,
+        issueId:null,
        },
        include: { user: true },
    })
