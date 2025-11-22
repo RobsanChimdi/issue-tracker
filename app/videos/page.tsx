@@ -22,7 +22,11 @@ interface Comment {
   content: string;
   user?: User;
 }
-
+interface Share {
+  id: number;
+  videoId: number;
+  userId: string;
+}
 interface Video {
   id: number;
   url: string;
@@ -31,6 +35,7 @@ interface Video {
   user: User;
   likes: Like[];
   comments?: Comment[];
+  shares?: Share[];
 }
 
 const Page = () => {
@@ -58,6 +63,25 @@ const Page = () => {
     }
     fetchData();
   }, []);
+
+  const handleShare = async (videoId: number) => {
+    try {
+      await axios.post(`/api/videos/${videoId}/share`);
+      setVideos((prev) =>
+        prev.map((v) =>
+          v.id === videoId
+            ? {
+                ...v,
+                // Assuming shares is an array similar to likes
+                shares: [...(v.shares || []), { id: 0, videoId, userId }],
+              }
+            : v
+        )
+      );
+    } catch (error) {
+      console.error("Error sharing video:", error);
+    }
+  };
 
   const isLiked = (videoId: number) => {
     const video = videos.find((v) => v.id === videoId);

@@ -124,8 +124,8 @@ CREATE TABLE `issues` (
 CREATE TABLE `Like` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` VARCHAR(191) NOT NULL,
-    `issueId` INTEGER NOT NULL,
-    `videoId` INTEGER NOT NULL,
+    `issueId` INTEGER NULL,
+    `videoId` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `Like_userId_issueId_key`(`userId`, `issueId`),
@@ -136,9 +136,9 @@ CREATE TABLE `Like` (
 CREATE TABLE `Comment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` VARCHAR(191) NOT NULL,
-    `issueId` INTEGER NOT NULL,
+    `issueId` INTEGER NULL,
     `text` VARCHAR(191) NOT NULL,
-    `videoId` INTEGER NOT NULL,
+    `videoId` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
