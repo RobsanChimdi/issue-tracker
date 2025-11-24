@@ -18,8 +18,10 @@ interface Comment{
 
 interface User {
   id: string
-  name: string
+  fname: string
+  lname:string
   imageUrl:string
+
 }
 
 interface Likes {
@@ -183,7 +185,7 @@ const IssuesPage = () => {
       {issue.comments.length > 0 && (
         <ul className="mt-2 max-h-24 overflow-y-auto space-y-1">
           {issue.comments.map(c => (
-            <li key={c.id}><span className="font-semibold">{c.user.name}:</span> {c.text}</li>
+            <li key={c.id}><span className="font-semibold">{c.user.fname} {c.user.lname}:</span> {c.text}</li>
           ))}
         </ul>
       )}
@@ -213,13 +215,13 @@ const IssuesPage = () => {
           {issue.shared.map(share => (
             <div key={share.id} className="flex items-center text-sm text-gray-500 mb-2 space-x-2">
               <img src={issues.find(i => i.user.id === share.sharerId)?.user.imageUrl} alt="" className="w-6 h-6 rounded-full"/>
-              <span>{share.sharerId === userId ? "You" : issues.find(i => i.user.id === share.sharerId)?.user.name} shared this post</span>
+              <span>{share.sharerId === userId ? "You" : issues.find(i => i.user.id === share.sharerId)?.user.fname} shared this post</span>
             </div>
           ))}
           <div className="bg-white rounded-xl p-3 border border-gray-200">
             <div className="flex items-center space-x-3 mb-2">
               <img src={issue.user.imageUrl} alt="" className="w-8 h-8 rounded-full"/>
-              <span className="font-semibold">{issue.user.name}</span>
+              <span className="font-semibold">{issue.user.fname} {issue.user.lname}</span>
             </div>
             {renderIssueContent(issue)}
           </div>

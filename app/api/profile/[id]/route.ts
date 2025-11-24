@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/app/lib/prisma";
 import { NextResponse } from "next/server";
 import {z} from "zod"
-
-const prisma = new PrismaClient();
 
 const userInfo = z.object({
   bio: z.string().min(10).max(500).optional(),
@@ -45,7 +43,7 @@ export async function POST(req: Request, {params}:{params:{id:string}}) {
         user: { connect: { id: params.id } },
       },
       include: {
-        user: { select: { id: true, name: true } },
+        user: { select: { id: true, fname: true, lname:true } },
       },
     });
 
@@ -62,7 +60,7 @@ export async function GET(req:Request, {params}:{params:{id:string}}){
     const profileInfo=await prisma.profile.findUnique({
       where: {userId:params.id},
       include: {
-        user: { select: { name: true, imageUrl: true } }}
+        user: { select: { fname: true, lname:true, imageUrl: true } }}
     });
      return NextResponse.json(profileInfo, {
       status: 200,

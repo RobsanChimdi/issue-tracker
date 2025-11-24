@@ -1,25 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { PrismaClient } from "@prisma/client";
+import {prisma} from "@/app/lib/prisma";
 import { promises as fs } from "fs";
 import path from "path";
 import { getSession } from "@/app/lib/session";
 
-const prisma = new PrismaClient();
 
 const createIssueSchema = z.object({
   title: z.string().min(1, "Title is required").max(255),
   description: z.string().min(1, "Description is required").max(5000),
 });
 
-const createCommentSchema = z.object({
-  issueId: z.number(),
-  text: z.string().min(1, "Comment cannot be empty"),
-});
 
-// ======================
-// CREATE ISSUE (POST)
-// ======================
 export async function POST(request: NextRequest) {
   try {
     const session = await getSession();
@@ -47,7 +39,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
       }
 
-      const maxSize = 100 * 1024 * 1024; // 100 MB
+      const maxSize = 100 * 1024 * 1024; 
       if (file.size > maxSize) {
         return NextResponse.json({ error: "File size exceeds limit" }, { status: 400 });
       }
@@ -76,7 +68,7 @@ export async function POST(request: NextRequest) {
       };
     }
 
-    const newIssue = await prisma.issues.create({
+    const newIssue = await prisma.issue.create({
       data: issueData,
       include: { images: true },
     });
@@ -90,10 +82,10 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const issues = await prisma.issues.findMany({
+    const issues = await prisma.issue.findMany({
       orderBy: { createdAt: "desc" },
       include: {
-        user: { select: { id: true, name: true, imageUrl: true } },
+        user: { select: { id: true, fname: true, lname:true, imageUrl: true } },
         images: { select: { url: true, imagename: true, createdAt: true } },
         likes: { select: { userId: true } },
         comments: {
@@ -101,7 +93,7 @@ export async function GET() {
             id: true,
             text: true,
             createdAt: true,
-            user: { select: { id: true, name: true, imageUrl: true } },
+            user: { select: { id: true, fname: true, lname:true, imageUrl: true } },
           },
         },
       },

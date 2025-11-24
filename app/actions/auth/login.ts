@@ -2,10 +2,12 @@
 
 import {prisma} from "@/app/lib/prisma";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { createSession } from "../../lib/session";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import type { FormState } from "../../lib/definitions";
+import { sendVerificationEmail } from "@/app/lib/mail";
 
 
 const LoginForm = z.object({
@@ -45,9 +47,17 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
   const verify=await prisma.user.findUnique({
     where:{verified:true,email:email}
   });
-  if(!verify){
-    return { message: "Please verify your email before logging in." };
-  }
+  if (!verify) {
+  const code = crypto.randomBytes(3).toString("hex").toUpperCase();
+
+  await prisma.user.update({
+    where: { email },
+    data: { verificationToken: code , verificationExpires: new Date(Date.now() + 1000 * 60 * 10),}
+  });
+
+  await sendVerificationEmail(user.email, code, user.fname, user.lname);
+ redirect(`/VerifyEmail?email=${user.email}`);
+}
   await createSession(String(user.id), user.email,user.fname);
 
   const returnUrl = (formData.get("returnUrl") as string) || "/";

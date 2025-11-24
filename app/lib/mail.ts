@@ -17,7 +17,7 @@ export async function sendVerificationEmail(to: string, code: string, fname: str
     text: `Your verification code is: ${code}`,
     html: `
       <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto;">
-        <h2 style="color: #333;">Hello ${name},</h2>
+        <h2 style="color: #333;">Hello ${fname} ${lname},</h2>
         <p style="color: #555; font-size: 16px;">
           Thank you for joining our application! To login and start using our website, please verify your email.
         </p>

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/app/lib/prisma";
 import { getSession } from "@/app/lib/session";
 
-const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -40,7 +39,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     const videoId = parseInt(params.id);
 
     await prisma.like.delete({
-      where: { userId_issueId: { userId: session.userId, videoId } },
+      where: { userId_videoId: { userId: session.userId, videoId } },
     });
 
     return NextResponse.json({ message: "Unliked" }, { status: 200 });

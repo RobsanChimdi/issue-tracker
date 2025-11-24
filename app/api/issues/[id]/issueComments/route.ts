@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import {prisma} from "@/app/lib/prisma";
 import { getSession } from "@/app/lib/session";
 import     {z} from "zod"
 
-const prisma = new PrismaClient();
 const createCommentSchema = z.object({
   text: z.string().min(1, "Comment cannot be empty"),
 });

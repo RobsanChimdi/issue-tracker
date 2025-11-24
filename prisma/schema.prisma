@@ -44,6 +44,7 @@ model User {
   images             Image[]
   videos             Video[]
   comments           Comment[]
+  shares             Share[]
 
   @@index([fname])
   @@map("users")
@@ -152,6 +153,7 @@ model Issue {
   images      Image[]
   likes       Like[]
   comments    Comment[]
+  shares      Share[]
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -186,7 +188,16 @@ model Comment {
   video     Video?  @relation(fields: [videoId], references: [id], onDelete: Cascade)
   issue     Issue?  @relation(fields: [issueId], references: [id], onDelete: Cascade)
 }
-
+model Share{
+  id   Int     @id @default(autoincrement())
+  posterId     String
+  sharerId     String
+  postId       Int?
+  videoId      Int?
+  user      User   @relation(fields: [posterId], references: [id], onDelete: Cascade)
+  issue     Issue?  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  video     Video?  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
 model Image {
   id        Int      @id @default(autoincrement())
   type      String
@@ -214,6 +225,7 @@ model Video {
   url       String
   likes       Like[]
   comments    Comment[]
+  shares      Share[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

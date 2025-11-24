@@ -1,8 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from "@/app/lib/prisma";
 import { NextResponse } from 'next/server';
 import { getSession } from '@/app/lib/session';
 
-const prisma = new PrismaClient();
+
 
 export async function GET() {
   const session = await getSession();
@@ -14,7 +14,7 @@ export async function GET() {
 
   const users = await prisma.user.findMany({
     where: { id: { not: currentUserId } },
-    select: { id: true, name: true, email: true, imageUrl:true },
+    select: { id: true, fname: true, email: true, imageUrl:true },
   });
 
   return NextResponse.json(users);

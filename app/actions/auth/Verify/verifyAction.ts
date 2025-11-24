@@ -1,16 +1,17 @@
 'use server'
-import {prisma }from "@/app/lib/prisma";
+import { prisma } from "@/app/lib/prisma";
 import { redirect } from "next/navigation";
 
 export async function verifyEmail(prevState: any, formData: FormData) {
+  const email = formData.get("email") as string;
   const code = formData.get("code") as string;
 
   const user = await prisma.user.findFirst({
-    where: { verificationToken: code },
+    where: { email, verificationToken: code },
   });
 
   if (!user) {
-    return { message: "Invalid verification code." };
+    return { message: "Invalid code or wrong email." };
   }
 
   if (user.verificationExpires! < new Date()) {

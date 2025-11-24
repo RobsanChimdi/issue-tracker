@@ -1,16 +1,23 @@
 'use client'
+
 import { verifyEmail } from "@/app/actions/auth/Verify/verifyAction";
 import { resendVerification } from "@/app/actions/auth/Verify/resendVerification";
 import { useFormState } from "react-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const initialState = { message: "" };
 
 export default function VerifyPage() {
-
   const [state, formAction] = useFormState(verifyEmail, initialState);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState(""); 
+  const searchParams = useSearchParams();
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const e = searchParams.get("email");
+    if (e) setEmail(e);
+  }, [searchParams]);
 
   async function handleResend() {
     setLoading(true);
@@ -29,6 +36,10 @@ export default function VerifyPage() {
         </h1>
 
         <form action={formAction} className="flex flex-col space-y-4">
+
+          {/* Hidden email input */}
+          <input type="hidden" name="email" value={email} />
+
           <input
             type="text"
             name="code"

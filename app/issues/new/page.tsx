@@ -45,7 +45,7 @@ const CreateIssuePage = () => {
         setTitle("");
         setDescription("");
         setFile(null);
-        router.push("/issues"); 
+        router.push("/"); 
       }
     } catch (error) {
       console.error("Error submitting issue:", error);
