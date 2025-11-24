@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Failed to save file" }, { status: 500 });
     }
 
-    const video = await prisma.videos.create({
+    const video = await prisma.video.create({
       data: {
         type: 'video',
         url: fileUrl,
@@ -96,13 +96,13 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
-    const videos = await prisma.videos.findMany({
+    const videos = await prisma.video.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
         user: {
           select: {
             id:true,
-            name: true
+            fname: true
           }
         }
       }
@@ -110,7 +110,8 @@ export async function GET() {
 
     const videosWithUser = videos.map(video => ({
       ...video,
-      username: video.user.name
+      username: video.user.fname,
+      userId: video.user.id
     }));
 
     return NextResponse.json(videosWithUser);

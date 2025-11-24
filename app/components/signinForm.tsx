@@ -40,6 +40,9 @@ function SigninForm() {
 
         <Link href="/Signup" className="text-fuchsia-800">Sign Up</Link>
       </form>
+      <div className="absolute bottom-10 text-gray-600">
+        Forget Password? <Link href="/ForgottenPassword" className="text-fuchsia-800">Reset Here</Link>
+      </div>
     </div>
   );
 }

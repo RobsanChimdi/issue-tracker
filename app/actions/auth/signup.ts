@@ -1,16 +1,16 @@
 'use server';
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
+import {prisma }from "@/app/lib/prisma";
 import { FormState, SignUpFormSchema } from "../../lib/definitions";
 import { sendVerificationEmail } from "../../lib/mail";
 
-const prisma = new PrismaClient();
 
 export async function SignUp(state: FormState, formData: FormData) {
   await new Promise(resolve => setTimeout(resolve, 2000));
 
   const validatedFields = SignUpFormSchema.safeParse({
-    name: formData.get("name"),
+    fname: formData.get("fname"),
+    lname: formData.get("lname"),
     email: formData.get("email"),
     password: formData.get("password"),
   });
@@ -22,7 +22,7 @@ export async function SignUp(state: FormState, formData: FormData) {
     };
   }
 
-  const { name, email, password } = validatedFields.data;
+  const { fname,lname, email, password } = validatedFields.data;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -30,7 +30,8 @@ export async function SignUp(state: FormState, formData: FormData) {
 
     await prisma.user.create({
       data: {
-        name: name.trim(),
+        fname: fname.trim(),
+        lname: lname.trim(),
         email: email.toLowerCase().trim(),
         password: hashedPassword,
         verified: false,
@@ -39,9 +40,8 @@ export async function SignUp(state: FormState, formData: FormData) {
       },
     });
 
-    // Separate try/catch for email
     try {
-      await sendVerificationEmail(email, verificationCode, name.trim());
+      await sendVerificationEmail(email, verificationCode, fname.trim(), lname.trim());
       return { success: true, message: `Verification code sent to <p styel= "color:blue">${email}</p>. Please check your inbox.` };
     } catch (emailError) {
       console.error("Email sending failed:", emailError);

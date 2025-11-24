@@ -1,13 +1,10 @@
 'use server'
-import { PrismaClient } from "@prisma/client";
 import { sendVerificationEmail } from "../../../lib/mail";
-
-const prisma = new PrismaClient();
-
+import {prisma} from "@/app/lib/prisma";
 export async function resendVerification(email: string) {
   const userName = await prisma.user.findFirst({
     where: { email },
-    select: { name: true },
+    select: { fname: true , lname: true },
   });
   const code = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -18,8 +15,11 @@ export async function resendVerification(email: string) {
       verificationExpires: new Date(Date.now() + 1000 * 60 * 10), 
     },
   });
+  if(!userName){
+    throw new Error("User not found");
+  }
 
-  await sendVerificationEmail(email, code, userName?.name || "User");
+  await sendVerificationEmail(email, code, userName.fname, userName.lname|| "User");
 
   return { success: true };
 }

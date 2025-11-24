@@ -1,12 +1,10 @@
-
-import { Signup } from "../../components/SignupForm";
-
 import React from 'react'
+import ForgottenPassword from '@/app/components/ForgottenPassword'
 
 const page = () => {
   return (
     <div>
-        <Signup/>
+        <ForgottenPassword/>
     </div>
   )
 }

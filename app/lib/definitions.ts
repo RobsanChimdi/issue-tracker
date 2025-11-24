@@ -1,7 +1,8 @@
 import React from 'react'
 import {z} from "zod"
 export const SignUpFormSchema=z.object({
-  name:z.string().min(2,{message:"Name is required"}).trim(),
+  fname:z.string().min(2,{message:"Name is required"}).trim(),
+  lname:z.string().min(2,{message:"Name is required"}).trim(),
 email:z.string().email({message:"please enter valid email"}).trim(),
   password: z
     .string()
@@ -27,6 +28,6 @@ export type FormState =
   export type SessionPayload = {
   userId: string,
   email: string
-  name:string|null,
+  fname:string|null,
   role?: string
 }

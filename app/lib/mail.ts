@@ -1,6 +1,7 @@
+"use server"
 import nodemailer from "nodemailer";
 
-export async function sendVerificationEmail(to: string, code: string, name: string) {
+export async function sendVerificationEmail(to: string, code: string, fname: string, lname: string) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {

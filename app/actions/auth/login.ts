@@ -1,13 +1,12 @@
 'use server';
 
-import { PrismaClient } from "@prisma/client";
+import {prisma} from "@/app/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createSession } from "../../lib/session";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import type { FormState } from "../../lib/definitions";
 
-const prisma = new PrismaClient();
 
 const LoginForm = z.object({
   email: z.string().email({ message: "Please enter a valid email" }).trim(),
@@ -49,7 +48,7 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
   if(!verify){
     return { message: "Please verify your email before logging in." };
   }
-  await createSession(String(user.id), user.email,user.name);
+  await createSession(String(user.id), user.email,user.fname);
 
   const returnUrl = (formData.get("returnUrl") as string) || "/";
   if (returnUrl.startsWith("/")) redirect(returnUrl);

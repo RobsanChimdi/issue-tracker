@@ -1,12 +1,10 @@
-
-import { Signup } from "../../components/SignupForm";
-
 import React from 'react'
+import TokenFill from '@/app/components/TokenFill'
 
 const page = () => {
   return (
     <div>
-        <Signup/>
+        <TokenFill/>
     </div>
   )
 }

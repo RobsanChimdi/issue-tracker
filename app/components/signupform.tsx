@@ -10,29 +10,47 @@ export const Signup = () => {
     <div className=" flex items-center justify-center min-h-screen  bg-gray-50">
       <form
         action={action}
-        className=" bg-white shadow-md rounded-2xl p-8  w-80 min-h-96 border border-gray-200"
+        className=" bg-white shadow-md rounded-2xl p-8  w-96 min-h-96 border border-gray-200"
       >
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-3">
           Create an Account
         </h2>
         <div className="mb-3">
           <label
-            htmlFor="name"
+            htmlFor="fname"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Name
+            FirstName
           </label>
           <input
-            id="name"
-            name="name"
+            id="fname"
+            name="fname"
             type="text"
             placeholder="Your Name"
             className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fuchsia-500 focus:outline-none"
           />
-          {state?.errors?.name && (
-            <p className="text-sm text-red-500 mt-1">{state.errors.name[0]}</p>
+          {state?.errors?.fname && (
+            <p className="text-sm text-red-500 mt-1">{state.errors.fname[0]}</p>
           )}
 
+        </div>
+        <div className="mb-3">
+          <label
+            htmlFor="lname"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            LastName
+          </label>
+          <input
+            id="lname"
+            name="lname"
+            type="text"
+            placeholder="Your father Name"
+            className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fuchsia-500 focus:outline-none"
+          />
+          {state?.errors?.lname && (
+            <p className="text-sm text-red-500 mt-1">{state.errors.lname[0]}</p>
+          )}
         </div>
         <div className="mb-3">
           <label
@@ -96,7 +114,7 @@ export const Signup = () => {
       {state?.message && (
         <p className="text-sm text-center text-green-600 mt-2">{state.message}</p>
       )}
-
+     
       </form>
     </div>
   );

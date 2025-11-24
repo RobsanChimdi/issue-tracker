@@ -1,7 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-import { redirect } from "next/navigation";
-const prisma = new PrismaClient();
-
+import {prisma} from "@/app/lib/prisma";
 export async function validateResetTokenAction(state: any, data: FormData) {
   const token = data.get("token") as string;
   if (!token || token.trim() === "") return { error: "Invalid or missing token." };

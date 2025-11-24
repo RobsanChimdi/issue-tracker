@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { useActionState } from 'react';
 import { validateResetTokenAction } from '@/app/actions/auth/forgottenPassword/resetToken';

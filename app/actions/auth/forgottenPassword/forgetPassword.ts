@@ -1,8 +1,7 @@
 import crypto from "crypto";
-import { PrismaClient } from "@prisma/client";
+import {prisma} from "@/app/lib/prisma";
 import { sendResetPasswordEmail } from "../../../lib/mail";
 
-const prisma = new PrismaClient();
 export async function sendResetPasswordEmailAction(state: any, data: FormData) {
   const email = data.get("email") as string;
   if (!email) return { message: "Please provide a valid email." };
@@ -22,5 +21,5 @@ export async function sendResetPasswordEmailAction(state: any, data: FormData) {
 
   await sendResetPasswordEmail(email, resetToken);
 
-  return { message };
+  return { message: "If an account with that email exists, a reset link has been sent." };
 }

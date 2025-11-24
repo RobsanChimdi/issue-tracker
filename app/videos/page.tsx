@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -7,26 +7,25 @@ import Link from "next/link";
 interface User {
   id: string;
   name: string;
+  imageUrl?: string;
 }
 
 interface Like {
+  userId: string;
+}
+
+interface Share {
   id: number;
   videoId: number;
-  userId: string;
+  sharerId: string;
 }
 
 interface Comment {
   id: number;
-  videoId: number;
-  userId: string;
   content: string;
-  user?: User;
+  user: User;
 }
-interface Share {
-  id: number;
-  videoId: number;
-  userId: string;
-}
+
 interface Video {
   id: number;
   url: string;
@@ -34,17 +33,14 @@ interface Video {
   type?: string;
   user: User;
   likes: Like[];
-  comments?: Comment[];
-  shares?: Share[];
+  comments: Comment[];
+  shared: Share[];
 }
 
-const Page = () => {
+const VideosPage = () => {
   const [videos, setVideos] = useState<Video[]>([]);
-  const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<string>("");
-  const [videoName, setVideoName] = useState("");
-  const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState<string>("");
   const [commentTexts, setCommentTexts] = useState<{ [key: number]: string }>({});
   const [loadingComment, setLoadingComment] = useState<number | null>(null);
 
@@ -52,185 +48,194 @@ const Page = () => {
     async function fetchData() {
       try {
         const session = await axios.get("/api/session");
-        setUsername(session.data.name);
-        setUserId(session.data.userId);
-
         const res = await axios.get("/api/videos");
-        if (res.data) setVideos(res.data);
+
+        setUserId(session.data.userId || session.data.id);
+        setProfileImage(session.data.imageUrl || "");
+        setVideos(res.data);
       } catch (err) {
-        console.error("Failed to load videos:", err);
+        console.log(err);
       }
     }
     fetchData();
   }, []);
 
+  const isLiked = (video: Video) => video.likes.some((l) => l.userId === userId);
+
+  const handleLike = async (video: Video) => {
+    try {
+      if (isLiked(video)) {
+        await axios.delete(`/api/videos/${video.id}/like`);
+        setVideos((prev) =>
+          prev.map((v) =>
+            v.id === video.id
+              ? { ...v, likes: v.likes.filter((l) => l.userId !== userId) }
+              : v
+          )
+        );
+      } else {
+        await axios.post(`/api/videos/${video.id}/like`);
+        setVideos((prev) =>
+          prev.map((v) =>
+            v.id === video.id
+              ? { ...v, likes: [...v.likes, { userId }] }
+              : v
+          )
+        );
+      }
+    } catch (err) {
+      console.log("Like error:", err);
+    }
+  };
+
   const handleShare = async (videoId: number) => {
     try {
-      await axios.post(`/api/videos/${videoId}/share`);
+      await axios.post(`/api/videos/${videoId}/share`, { sharerId: userId });
       setVideos((prev) =>
         prev.map((v) =>
           v.id === videoId
             ? {
                 ...v,
-                // Assuming shares is an array similar to likes
-                shares: [...(v.shares || []), { id: 0, videoId, userId }],
+                shared: [
+                  ...v.shared,
+                  { id: Date.now(), videoId, sharerId: userId },
+                ],
               }
             : v
         )
       );
-    } catch (error) {
-      console.error("Error sharing video:", error);
-    }
-  };
-
-  const isLiked = (videoId: number) => {
-    const video = videos.find((v) => v.id === videoId);
-    return video?.likes.some((l) => l.userId === userId) ?? false;
-  };
-
-  const likeHandler = async (video: Video) => {
-    if (isLiked(video.id)) {
-      await axios.delete(`/api/videos/${video.id}/like`);
-
-      setVideos((prev) =>
-        prev.map((v) =>
-          v.id === video.id
-            ? { ...v, likes: v.likes.filter((l) => l.userId !== userId) }
-            : v
-        )
-      );
-    } else {
-      await axios.post(`/api/videos/${video.id}/like`);
-
-      setVideos((prev) =>
-        prev.map((v) =>
-          v.id === video.id
-            ? {
-                ...v,
-                likes: [...v.likes, { id: 0, videoId: video.id, userId }],
-              }
-            : v
-        )
-      );
+    } catch (err) {
+      console.log("Share error:", err);
     }
   };
 
   const addComment = async (videoId: number) => {
+    const text = commentTexts[videoId]?.trim();
+    if (!text) return;
+
+    setLoadingComment(videoId);
     try {
-      setLoadingComment(videoId);
-
-      const response = await axios.post(`/api/videos/${videoId}/comments`, {
-        content: commentTexts[videoId],
+      const res = await axios.post(`/api/videos/${videoId}/comments`, {
+        content: text,
       });
-
-      const newComment = response.data;
 
       setVideos((prev) =>
         prev.map((v) =>
-          v.id === videoId
-            ? { ...v, comments: [...(v.comments || []), newComment] }
-            : v
+          v.id === videoId ? { ...v, comments: [...v.comments, res.data] } : v
         )
       );
 
       setCommentTexts((prev) => ({ ...prev, [videoId]: "" }));
-    } catch (error) {
-      console.error("Error adding comment:", error);
+    } catch (err) {
+      console.log("Comment error:", err);
     } finally {
       setLoadingComment(null);
     }
   };
 
-  return (
-    <div className="p-6 flex flex-col items-center justify-center">
-      <div className="mt-6 mb-4">
+  const renderVideoContent = (video: Video) => (
+    <>
+      <video
+        src={video.url}
+        controls
+        className="w-full h-[320px] rounded-xl bg-black mt-2"
+      />
+
+      <div className="flex items-center justify-between mt-3 text-sm">
+        <div className="space-x-3">
+          <button onClick={() => handleLike(video)}>
+            👍 {video.likes.length}
+          </button>
+          <button>💬 {video.comments.length} Comments</button>
+          <button onClick={() => handleShare(video.id)}>↗ Share {video.shared.length}</button>
+        </div>
+
+        <Link href={`/videos/${video.id}`} className="text-blue-600 hover:underline">
+          View Details
+        </Link>
+      </div>
+
+      {video.comments.length > 0 && (
+        <ul className="mt-3 space-y-1 max-h-32 overflow-y-auto">
+          {video.comments.map((c) => (
+            <li key={c.id}>
+              <span className="font-semibold">{c.user.name}:</span> {c.content}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="flex items-center gap-2 mt-3">
         <input
           type="text"
-          placeholder="Search videos by name..."
-          value={videoName}
-          onChange={(e) => setVideoName(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-lg"
+          value={commentTexts[video.id] || ""}
+          onChange={(e) =>
+            setCommentTexts((prev) => ({ ...prev, [video.id]: e.target.value }))
+          }
+          placeholder="Write a comment..."
+          className="flex-1 border px-3 py-1 rounded-md text-sm"
         />
+        <button
+          onClick={() => addComment(video.id)}
+          disabled={loadingComment === video.id}
+          className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600"
+        >
+          {loadingComment === video.id ? "..." : "Send"}
+        </button>
       </div>
+    </>
+  );
 
-      <Link href="/videos/new">
-        <div className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition">
-          <span>📸</span>
-          <span>Upload Video</span>
-        </div>
-      </Link>
-
-      <div className="mt-4 space-y-6 w-full max-w-2xl">
-        {videos
-          .filter((v) =>
-            v.videoname?.toLowerCase().includes(videoName.toLowerCase())
-          )
-          .map((video) => (
-            <div
-              key={video.id}
-              className="border border-gray-200 rounded-lg p-4"
-            >
-              <h2 className="text-lg font-semibold mb-3">
-                {video.user.name ?? "Unknown User"}
-              </h2>
-
-              <video
-                src={video.url}
-                controls
-                className="w-full h-[400px] object-cover shadow-lg rounded-lg"
+  const renderPost = (video: Video) => {
+    if (video.shared.length > 0) {
+      return (
+        <div className="bg-gray-50 rounded-xl p-3 border border-gray-200">
+          {video.shared.map((share) => (
+            <div key={share.id} className="flex items-center text-sm text-gray-500 mb-2 space-x-2">
+              <img
+                src={videos.find((v) => v.user.id === share.sharerId)?.user.imageUrl || "/default-avatar.png"}
+                className="w-6 h-6 rounded-full"
               />
-              <div className="flex items-center gap-4 mt-3">
-                <button
-                  className="hover:text-fuchsia-600"
-                  onClick={() => likeHandler(video)}
-                >
-                  👍 {video.likes.length}
-                </button>
-
-                <button className="hover:text-fuchsia-600">
-                  💬 {video.comments?.length ?? 0} Comment
-                </button>
-
-                <button className="hover:text-fuchsia-600">↗ Share</button>
-              </div>
-              {video.comments && video.comments.length > 0 && (
-                <ul className="mt-3 space-y-1 border-t pt-2">
-                  {video.comments.map((c) => (
-                    <li key={c.id} className="text-sm">
-                      <span className="font-semibold">
-                        {c.user?.name ?? "User"}:
-                      </span>{" "}
-                      {c.content}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <div className="flex items-center gap-2 mt-3">
-                <input
-                  type="text"
-                  value={commentTexts[video.id] || ""}
-                  onChange={(e) =>
-                    setCommentTexts((prev) => ({
-                      ...prev,
-                      [video.id]: e.target.value,
-                    }))
-                  }
-                  placeholder="Write a comment..."
-                  className="flex-1 border rounded px-2 py-1 text-sm"
-                />
-                <button
-                  onClick={() => addComment(video.id)}
-                  disabled={loadingComment === video.id}
-                  className="bg-fuchsia-500 text-white px-3 py-1 rounded hover:bg-fuchsia-600 text-sm"
-                >
-                  {loadingComment === video.id ? "..." : "Send"}
-                </button>
-              </div>
+              <span>
+                {share.sharerId === userId ? "You" : videos.find((v) => v.user.id === share.sharerId)?.user.name} shared this video
+              </span>
             </div>
           ))}
+
+          <div className="bg-white rounded-xl p-3 border border-gray-200">
+            <div className="flex items-center gap-3 mb-2">
+              <img src={video.user.imageUrl || "/default-avatar.png"} className="w-8 h-8 rounded-full" />
+              <span className="font-semibold">{video.user.name}</span>
+            </div>
+            {renderVideoContent(video)}
+          </div>
+        </div>
+      );
+    } else {
+      return <div className="bg-white rounded-xl p-3 border border-gray-200">{renderVideoContent(video)}</div>;
+    }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="mb-6">
+        <Link href="/videos/new" className="flex items-center space-x-3 bg-slate-100 p-3 rounded-xl">
+          <img src={profileImage || "/default-avatar.png"} className="w-12 h-12 rounded-full" />
+          <input type="text" placeholder="Share a new video..." className="flex-1 p-2 rounded-md border bg-white" />
+        </Link>
       </div>
+
+      {videos.length === 0 ? (
+        <p className="text-center text-gray-500">No videos posted yet.</p>
+      ) : (
+        <ul className="space-y-6">
+          {videos.map((video) => (
+            <li key={video.id}>{renderPost(video)}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
 
-export default Page;
+export default VideosPage;

@@ -1,8 +1,6 @@
 'use server'
-import { PrismaClient } from "@prisma/client";
+import {prisma }from "@/app/lib/prisma";
 import { redirect } from "next/navigation";
-
-const prisma = new PrismaClient();
 
 export async function verifyEmail(prevState: any, formData: FormData) {
   const code = formData.get("code") as string;

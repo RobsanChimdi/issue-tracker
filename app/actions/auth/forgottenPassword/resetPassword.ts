@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-import { redirect } from "next/navigation";
-import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient();
+import bcrypt from "bcrypt";
+import {prisma} from "@/app/lib/prisma";
 
 export async function resetPasswordAction(state: any, data: FormData) {
   const token = data.get("token") as string;
