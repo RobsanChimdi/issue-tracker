@@ -1,4 +1,4 @@
-
+'use server';
 import bcrypt from "bcrypt";
 import {prisma} from "@/app/lib/prisma";
 

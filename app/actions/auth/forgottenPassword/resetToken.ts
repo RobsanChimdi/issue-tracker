@@ -1,3 +1,4 @@
+'use server';
 import {prisma} from "@/app/lib/prisma";
 export async function validateResetTokenAction(state: any, data: FormData) {
   const token = data.get("token") as string;

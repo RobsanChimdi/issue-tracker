@@ -1,3 +1,4 @@
+'use server';
 import crypto from "crypto";
 import {prisma} from "@/app/lib/prisma";
 import { sendResetPasswordEmail } from "../../../lib/mail";

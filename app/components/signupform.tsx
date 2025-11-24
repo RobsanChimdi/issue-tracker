@@ -1,10 +1,18 @@
 "use client";
 import { SignUp } from "@/app/actions/auth/signup";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 
 export const Signup = () => {
+  const router=useRouter()
   const [state, action, pending] = useActionState(SignUp, undefined);
+   useEffect(() => {
+     if (state?.success) {
+         router.push("/VerifyEmail");
+     }
+  }, [state?.success]);
 
   return (
     <div className=" flex items-center justify-center min-h-screen  bg-gray-50">
