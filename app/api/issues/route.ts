@@ -80,7 +80,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Update the GET function in your existing /app/api/issues/route.ts
 export async function GET() {
   try {
     const issues = await prisma.issue.findMany({

@@ -106,55 +106,52 @@ useEffect(() => {
 }, [userId]); 
 
 const HandleShare = async (issueId: number) => {
+  const originalIssue = issues.find(i => i.id === issueId);
+  if (!originalIssue) return;
+
+  const tempId = Date.now(); 
+
+  const tempSharedIssue: Issue = {
+    ...originalIssue,
+    id: tempId,
+    createdAt: new Date().toISOString(),
+    user: {
+      id: userId,
+      fname: "You",
+      lname: "",
+      imageUrl: profileImage,
+      name: "You"
+    },
+    isShared: true,
+    originalPostId: originalIssue.id,
+    originalUser: originalIssue.user,
+    likes: [],
+    shares: [],
+    comments: [],
+    images: originalIssue.images || [],
+    likesCount: 0,
+    commentsCount: 0,
+    likedBy: []
+  };
+
+  setIssues(prev => [tempSharedIssue, ...prev]);
+
   try {
-    const originalIssue = issues.find(i => i.id === issueId);
-    if (!originalIssue) {
-      console.error("Original issue not found");
-      return;
-    }
-    const tempId = Date.now();
-    const tempSharedIssue: Issue = {
-      ...originalIssue,
-      id: tempId,
-      createdAt: new Date().toISOString(),
-      user: {
-        id: userId,
-        fname: "You",
-        lname: "",
-        imageUrl: profileImage,
-        name: "You"
-      },
-      isShared: true,
-      originalPostId: originalIssue.id,
-      originalUser: originalIssue.user,
-      likes: [],
-      shares: [],
-      comments: [],
-      images: originalIssue.images || [],
-      likesCount: 0,
-      commentsCount: 0,
-      likedBy: []
-    };
-    setIssues(prev => [tempSharedIssue, ...prev]);
-    const response = await axios.post(`/api/issues/${issueId}/share`, { 
-      sharerId: userId 
+    const response = await axios.post(`/api/issues/${issueId}/share`, {
+      sharerId: userId
     });
-    
+
     const sharedIssue = response.data;
-    console.log("Shared issue response:", sharedIssue);
-    setIssues(prev => 
-      prev.map(issue => 
-        issue.id === tempId ? sharedIssue : issue
-      )
+
+    setIssues(prev =>
+      prev.map(issue => issue.id === tempId ? sharedIssue : issue)
     );
 
     alert("Post shared successfully!");
-
   } catch (error: any) {
     console.error("Share error:", error);
-    setIssues(prev => 
-      prev.filter(issue => issue.id !== Date.now())
-    );
+
+    setIssues(prev => prev.filter(issue => issue.id !== tempId));
 
     if (error.response?.status === 400) {
       alert(error.response.data.error || "Already shared this post");
@@ -209,7 +206,7 @@ const HandleShare = async (issueId: number) => {
 
     setLoadingComment(issueId)
     try {
-      const res = await axios.post(`/api/issues/${issueId}/comments`, { text })
+      const res = await axios.post(`/api/issues/${issueId}/issueComments`, { text })
       const newComment: Comment = res.data
 
       setIssues(prev =>
@@ -294,7 +291,6 @@ const HandleShare = async (issueId: number) => {
                 key={issue.id}
                 className="bg-slate-100 border border-gray-200 rounded-2xl p-5 shadow-sm transition-all duration-200 w-[500px] h-min-[700px] h-auto"
               >
-                {/* Shared header for shared posts */}
                 {renderSharedHeader(issue)}
 
                 <div className='flex flex-row justify-between items-start'>
@@ -473,7 +469,19 @@ const HandleShare = async (issueId: number) => {
                         <ul className="space-y-2 mb-3 max-h-32 overflow-y-auto pr-2">
                           {issue.comments.map(comment => (
                             <li key={comment.id} className="text-sm leading-relaxed break-words whitespace-pre-line">
-                              <span className="font-semibold">{comment.user.name}:</span> {comment.text}
+                              <span className="font-semibold flex"><img src={comment.user.imageUrl} alt="?" className='w-8 h-8 rounded-full bg-slate-300'/>{comment.user.fname} {comment.user.lname}:</span> {comment.text.length>40?(
+                                <>
+                                  {more[comment.id]
+                                    ? comment.id
+                                    : comment.text.substring(0, 50) + "..."}
+                                  <button
+                                    onClick={() => toggleDescription(issue.id)}
+                                    className="text-blue-600 ml-1 hover:underline"
+                                  >
+                                    {more[issue.id] ? "see less" : "see more"}
+                                  </button>
+                                </>
+                              ):comment.text}
                             </li>
                           ))}
                         </ul>
