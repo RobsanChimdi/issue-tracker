@@ -13,17 +13,17 @@ interface Image {
 const NavBar = () => {
   const [image, setImage] = useState<Image | null>(null);
 
-  useEffect(() => {
-    async function fetchProfileImage() {
-      try {
-        const { data } = await axios.get("/api/profile");
-        setImage(data);
-      } catch (err) {
-        console.error("Error fetching image", err);
-      }
-    }
-    fetchProfileImage();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchProfileImage() {
+  //     try {
+  //       const { data } = await axios.get("/api/profile");
+  //       setImage(data);
+  //     } catch (err) {
+  //       console.error("Error fetching image", err);
+  //     }
+  //   }
+  //   fetchProfileImage();
+  // }, []);
 
   return (
     <nav className="flex items-center justify-between h-14 px-6 bg-white dark:bg-gray-300 shadow-md">

@@ -1,12 +1,9 @@
 // app/issues/[id]/page.tsx
 'use server'
-import { PrismaClient } from "@prisma/client";
+import {prisma } from "../../lib/prisma";
 import { notFound } from "next/navigation";
 import React from 'react';
-import { deleteIssue } from "@/app/actions/issues/deletion";
-import {DeleteB} from "../../components/ui/DeleteButton";
-import { UpdatePop } from "../../components/ui/UpdatePopUp"
-const prisma = new PrismaClient();
+
 
 interface Props {
   params: { id: string };
@@ -40,17 +37,13 @@ const IssueDetailPage = async ({ params }: Props) => {
     if (isNaN(issueId)) {
         return notFound(); 
     }
- async function handleDelete() {
-    "use server";
-    await deleteIssue(issueId);
-  }
 
-    const issue = await prisma.issues.findUnique({
+    const issue = await prisma.issue.findUnique({
         where: { id: issueId },
         include: {
             user:{
               select:{
-                id:true, name:true, email:true
+                id:true, fname:true, email:true
               }  
             },
             images:{
@@ -103,8 +96,7 @@ const IssueDetailPage = async ({ params }: Props) => {
                 </div>
                 <aside className="md:col-span-1 space-y-4">
                     <div className="flex flex-col space-y-2">
-                        <UpdatePop id={issueId} title={issue.title} description={issue.description}/>
-                        <DeleteB id={issueId}/>
+                      
                     </div>
                     <div className="bg-white p-4 rounded-xl shadow-md text-sm border border-gray-100">
                         <div className="mb-2">

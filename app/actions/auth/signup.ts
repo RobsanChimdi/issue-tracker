@@ -42,7 +42,7 @@ export async function SignUp(state: FormState, formData: FormData) {
 
     try {
       await sendVerificationEmail(email, verificationCode, fname.trim(), lname.trim());
-      return { success: true, message: `Verification code sent to <p styel= "color:blue">${email}</p>. Please check your inbox.` };
+      return { success: true, message: `Verification code sent to <p style= "color:blue">${email}</p>. Please check your inbox.` };
     } catch (emailError) {
       console.error("Email sending failed:", emailError);
       return { 

@@ -2,14 +2,14 @@
 
 import { verifyEmail } from "@/app/actions/auth/Verify/verifyAction";
 import { resendVerification } from "@/app/actions/auth/Verify/resendVerification";
-import { useFormState } from "react-dom";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useActionState } from "react";
 
 const initialState = { message: "" };
 
 export default function VerifyPage() {
-  const [state, formAction] = useFormState(verifyEmail, initialState);
+   const [state, action, pending] = useActionState(verifyEmail, undefined);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -35,9 +35,8 @@ export default function VerifyPage() {
           Verify Your Email
         </h1>
 
-        <form action={formAction} className="flex flex-col space-y-4">
+        <form action={action} className="flex flex-col space-y-4">
 
-          {/* Hidden email input */}
           <input type="hidden" name="email" value={email} />
 
           <input
@@ -57,17 +56,17 @@ export default function VerifyPage() {
           </button>
         </form>
 
-        {state.message && (
-          <p className="text-center text-red-500 mt-4">{state.message}</p>
+        {state?.message && (
+          <p className="text-center text-red-500 mt-4">{state?.message}</p>
         )}
 
         <div className="text-center mt-4">
           <button
             onClick={handleResend}
-            disabled={loading}
+            disabled={pending}
             className="text-blue-600 hover:underline disabled:opacity-50"
           >
-            {loading ? "Sending..." : "Resend code?"}
+            {pending? "Sending..." : "Resend code?"}
           </button>
         </div>
 

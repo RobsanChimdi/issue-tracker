@@ -115,6 +115,8 @@ CREATE TABLE `issues` (
     `userId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `isShared` BOOLEAN NOT NULL DEFAULT false,
+    `originalPostId` INTEGER NULL,
 
     INDEX `issues_userId_idx`(`userId`),
     PRIMARY KEY (`id`)
@@ -147,12 +149,14 @@ CREATE TABLE `Comment` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Share` (
+CREATE TABLE `shares` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `posterId` VARCHAR(191) NOT NULL,
     `sharerId` VARCHAR(191) NOT NULL,
-    `postId` INTEGER NOT NULL,
+    `postId` INTEGER NULL,
+    `videoId` INTEGER NULL,
 
+    UNIQUE INDEX `shares_postId_sharerId_key`(`postId`, `sharerId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -225,6 +229,9 @@ ALTER TABLE `messages` ADD CONSTRAINT `messages_conversationId_fkey` FOREIGN KEY
 ALTER TABLE `attachments` ADD CONSTRAINT `attachments_messageId_fkey` FOREIGN KEY (`messageId`) REFERENCES `messages`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `issues` ADD CONSTRAINT `issues_originalPostId_fkey` FOREIGN KEY (`originalPostId`) REFERENCES `issues`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `issues` ADD CONSTRAINT `issues_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -246,10 +253,10 @@ ALTER TABLE `Comment` ADD CONSTRAINT `Comment_videoId_fkey` FOREIGN KEY (`videoI
 ALTER TABLE `Comment` ADD CONSTRAINT `Comment_issueId_fkey` FOREIGN KEY (`issueId`) REFERENCES `issues`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Share` ADD CONSTRAINT `Share_posterId_fkey` FOREIGN KEY (`posterId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `shares` ADD CONSTRAINT `shares_postId_fkey` FOREIGN KEY (`postId`) REFERENCES `issues`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Share` ADD CONSTRAINT `Share_postId_fkey` FOREIGN KEY (`postId`) REFERENCES `issues`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `shares` ADD CONSTRAINT `shares_videoId_fkey` FOREIGN KEY (`videoId`) REFERENCES `videos`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `images` ADD CONSTRAINT `images_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -2,7 +2,7 @@
 import { prisma } from "@/app/lib/prisma";
 import { redirect } from "next/navigation";
 
-export async function verifyEmail(prevState: any, formData: FormData) {
+export async function verifyEmail(state: any, formData: FormData) {
   const email = formData.get("email") as string;
   const code = formData.get("code") as string;
 

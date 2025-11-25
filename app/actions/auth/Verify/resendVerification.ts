@@ -1,25 +1,33 @@
 'use server'
 import { sendVerificationEmail } from "../../../lib/mail";
-import {prisma} from "@/app/lib/prisma";
+import { prisma } from "@/app/lib/prisma";
+
 export async function resendVerification(email: string) {
-  const userName = await prisma.user.findFirst({
+  const user = await prisma.user.findUnique({
     where: { email },
-    select: { fname: true , lname: true },
+    select: { fname: true, lname: true, email: true },
   });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
   const code = Math.floor(100000 + Math.random() * 900000).toString();
 
   await prisma.user.update({
     where: { email },
     data: {
       verificationToken: code,
-      verificationExpires: new Date(Date.now() + 1000 * 60 * 10), 
+      verificationExpires: new Date(Date.now() + 1000 * 60 * 10),
     },
   });
-  if(!userName){
-    throw new Error("User not found");
-  }
 
-  await sendVerificationEmail(email, code, userName.fname, userName.lname|| "User");
+  await sendVerificationEmail(
+    user.email,
+    code,
+    user.fname,
+    user.lname || "User"
+  );
 
   return { success: true };
 }

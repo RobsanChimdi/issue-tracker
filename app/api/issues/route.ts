@@ -80,33 +80,74 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// Update the GET function in your existing /app/api/issues/route.ts
 export async function GET() {
   try {
     const issues = await prisma.issue.findMany({
       orderBy: { createdAt: "desc" },
       include: {
-        user: { select: { id: true, fname: true, lname:true, imageUrl: true } },
-        images: { select: { url: true, imagename: true, createdAt: true } },
-        likes: { select: { userId: true } },
+        user: { 
+          select: { id: true, fname: true, lname: true, imageUrl: true } 
+        },
+        images: { 
+          select: { id: true, url: true, imagename: true, createdAt: true } 
+        },
+        likes: { 
+          select: { userId: true } 
+        },
+        shares: {
+          select: {
+            id: true,
+            sharerId: true, 
+            posterId: true, 
+            postId: true
+          }
+        },
         comments: {
           select: {
             id: true,
             text: true,
             createdAt: true,
-            user: { select: { id: true, fname: true, lname:true, imageUrl: true } },
+            user: { 
+              select: { id: true, fname: true, lname: true, imageUrl: true } 
+            },
           },
         },
+        originalPost: {
+          include: {
+            user: { 
+              select: { id: true, fname: true, lname: true, imageUrl: true } 
+            }
+          }
+        }
       },
     });
 
-    const issuesWithLikes = issues.map((issue) => ({
-      ...issue,
-      likesCount: issue.likes.length,
-      likedBy: issue.likes.map((like) => like.userId),
-      commentsCount: issue.comments.length,
-    }));
+    const transformedIssues = issues.map((issue) => {
+      const baseIssue = {
+        ...issue,
+        user: {
+          ...issue.user,
+          name: `${issue.user.fname} ${issue.user.lname}`.trim()
+        },
+        likesCount: issue.likes.length,
+        likedBy: issue.likes.map((like) => like.userId),
+        commentsCount: issue.comments.length,
+      };
+      if (issue.isShared && issue.originalPost) {
+        return {
+          ...baseIssue,
+          originalUser: {
+            ...issue.originalPost.user,
+            name: `${issue.originalPost.user.fname} ${issue.originalPost.user.lname}`.trim()
+          }
+        };
+      }
 
-    return NextResponse.json(issuesWithLikes, {
+      return baseIssue;
+    });
+
+    return NextResponse.json(transformedIssues, {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -115,5 +156,3 @@ export async function GET() {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-
-

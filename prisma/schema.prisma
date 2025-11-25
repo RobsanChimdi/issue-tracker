@@ -6,12 +6,13 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../app/generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
 }
+
 
 enum Role {
   MEMBER
@@ -44,7 +45,6 @@ model User {
   images             Image[]
   videos             Video[]
   comments           Comment[]
-  shares             Share[]
 
   @@index([fname])
   @@map("users")
@@ -149,7 +149,10 @@ model Issue {
   userId      String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-
+  isShared      Boolean  @default(false)
+  originalPostId Int?
+  originalPost  Issue?   @relation("OriginalPost", fields: [originalPostId], references: [id])
+  sharedPosts   Issue[]  @relation("OriginalPost")
   images      Image[]
   likes       Like[]
   comments    Comment[]
@@ -194,9 +197,10 @@ model Share{
   sharerId     String
   postId       Int?
   videoId      Int?
-  user      User   @relation(fields: [posterId], references: [id], onDelete: Cascade)
   issue     Issue?  @relation(fields: [postId], references: [id], onDelete: Cascade)
   video     Video?  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  @@unique([postId, sharerId]) 
+  @@map("shares")
 }
 model Image {
   id        Int      @id @default(autoincrement())
