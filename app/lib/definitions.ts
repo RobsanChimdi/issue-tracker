@@ -29,5 +29,6 @@ export type FormState =
   userId: string,
   email: string
   fname:string|null,
+  imageUrl ?: string,
   role?: string
 }

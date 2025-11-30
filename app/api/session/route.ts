@@ -8,5 +8,5 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  return NextResponse.json({ userId: session.userId, email:session.email, name: session.fname });
+  return NextResponse.json({ userId: session.userId, email:session.email,imageUrl:session.imageUrl, name: session.fname });
 }

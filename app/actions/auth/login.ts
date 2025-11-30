@@ -58,7 +58,7 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
   await sendVerificationEmail(user.email, code, user.fname, user.lname);
  redirect(`/VerifyEmail?email=${user.email}`);
 }
-  await createSession(String(user.id), user.email,user.fname);
+  await createSession(String(user.id), user.email,user.fname, user.imageUrl);
 
   const returnUrl = (formData.get("returnUrl") as string) || "/";
   if (returnUrl.startsWith("/")) redirect(returnUrl);

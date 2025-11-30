@@ -27,7 +27,8 @@ export async function GET() {
             user: {
               select: {
                 id: true,
-                name: true,
+                fname: true,
+                lname:true,
                 email: true,
               }
             } 
@@ -45,7 +46,7 @@ export async function GET() {
       participants: conv.participants.map(p => ({
         id: p.id,
         userId: p.userId,
-        name: p.user.name,
+        name: p.user.fname,
       })),
       lastMessage: conv.lastMessage ? {
         text: conv.lastMessage.text,
