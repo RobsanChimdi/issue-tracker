@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 
 interface User {
   id: string;
-  name: string;
+  fname: string;
+  lname:string;
+  imageUrl:string;
   email: string;
 }
 
@@ -22,8 +24,9 @@ export default function Contacts() {
         setCurrentUserId(userId);
 
         const usersRes = await axios.get('/api/users');
-        const allUsers: User[] = usersRes.data;
+        const allUsers: User[] = usersRes.data.users;
         setUsers(allUsers.filter(u => u.id !== userId));
+
       } catch (error) {
         console.error("Error fetching users:", error);
       } 
@@ -54,8 +57,16 @@ export default function Contacts() {
                 onClick={() => handleStartChat(user.id)}
                 className="p-3 border rounded-lg mb-3 hover:bg-gray-100 cursor-pointer transition"
               >
-                <p className="font-semibold">{user.name}</p>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={user.imageUrl ?? "/default-avatar.png"}
+                    alt="profile"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <p className="font-semibold">{user.fname} {user.lname}</p>
+                </div>
               </div>
+
             </li>
           ))}
         </ul>
