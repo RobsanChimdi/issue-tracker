@@ -232,7 +232,9 @@ model Video {
   shares      Share[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  originalPostId Int?
+  originalPost  Video?   @relation("OriginalPost", fields: [originalPostId], references: [id])
+  sharedPosts   Video[]  @relation("OriginalPost")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
