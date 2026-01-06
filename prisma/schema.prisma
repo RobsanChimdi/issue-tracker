@@ -191,17 +191,21 @@ model Comment {
   video     Video?  @relation(fields: [videoId], references: [id], onDelete: Cascade)
   issue     Issue?  @relation(fields: [issueId], references: [id], onDelete: Cascade)
 }
-model Share{
-  id   Int     @id @default(autoincrement())
-  posterId     String
-  sharerId     String
-  postId       Int?
-  videoId      Int?
-  issue     Issue?  @relation(fields: [postId], references: [id], onDelete: Cascade)
-  video     Video?  @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  @@unique([postId, sharerId]) 
+model Share {
+  id        Int    @id @default(autoincrement())
+  posterId  String
+  sharerId  String
+  postId    Int?
+  videoId   Int?
+
+  issue     Issue? @relation(fields: [postId], references: [id], onDelete: Cascade)
+  video     Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, sharerId])
+  @@unique([videoId, sharerId]) // ✅ ADD THIS
   @@map("shares")
 }
+
 model Image {
   id        Int      @id @default(autoincrement())
   type      String
@@ -221,21 +225,27 @@ model Image {
 }
 
 model Video {
-  id        Int      @id @default(autoincrement())
-  type      String
-  videoname String
-  userId    String
-  videoSize Int
-  url       String
-  likes       Like[]
-  comments    Comment[]
-  shares      Share[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  originalPostId Int?
-  originalPost  Video?   @relation("OriginalPost", fields: [originalPostId], references: [id])
-  sharedPosts   Video[]  @relation("OriginalPost")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              Int      @id @default(autoincrement())
+  type            String
+  videoname       String
+  userId          String
+  videoSize       Int
+  url             String
+
+  isShared        Boolean  @default(false)
+
+  originalPostId  Int?
+  originalPost    Video?   @relation("OriginalPost", fields: [originalPostId], references: [id])
+  sharedPosts     Video[]  @relation("OriginalPost")
+
+  likes           Like[]
+  comments        Comment[]
+  shares          Share[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("videos")

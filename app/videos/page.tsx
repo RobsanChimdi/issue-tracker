@@ -42,7 +42,7 @@ interface Video {
   shares: Share[];
   comments: Comment[];
   isShared?: boolean;
-  originalVideoId?: number;
+  originalPostId?: number;
   originalUser?: User;
 }
 
@@ -154,7 +154,7 @@ const VideosPage = () => {
     // Check if already shared by this user
     const alreadyShared = videos.some(v => 
       v.isShared && 
-      v.originalVideoId === video.id && 
+      v.originalPostId === video.id && 
       v.user.id === userId
     );
     
@@ -177,7 +177,7 @@ const VideosPage = () => {
         name: "You"
       },
       isShared: true,
-      originalVideoId: originalVideo.id,
+      originalPostId: originalVideo.id,
       originalUser: originalVideo.user,
       likes: [],
       shares: [],

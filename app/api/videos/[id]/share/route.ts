@@ -53,34 +53,33 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     });
 
     // Create a shared video entry
-    const sharedVideo = await prisma.video.create({
-      data: {
-        url: originalVideo.url,
-        videoname: originalVideo.videoname,
-        type: originalVideo.type,
-        userId: session.userId,
-        isShared: true,
-        originalVideoId: videoId,
-        videoSize: originalVideo.videoSize,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            fname: true,
-            lname: true,
-            imageUrl: true,
-          }
-        },
-        likes: true,
-        comments: {
-          include: {
-            user: true
-          }
-        },
-        shares: true
+   const sharedVideo = await prisma.video.create({
+  data: {
+    url: originalVideo.url,
+    videoname: originalVideo.videoname,
+    type: originalVideo.type,
+    userId: session.userId,
+    isShared: true,
+    originalPostId: videoId, // ✅ FIX
+    videoSize: originalVideo.videoSize,
+  },
+  include: {
+    user: {
+      select: {
+        id: true,
+        fname: true,
+        lname: true,
+        imageUrl: true,
       }
-    });
+    },
+    likes: true,
+    comments: {
+      include: { user: true }
+    },
+    shares: true
+  }
+});
+
 
     return NextResponse.json({
       ...sharedVideo,

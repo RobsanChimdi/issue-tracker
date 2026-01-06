@@ -16,14 +16,13 @@ const NavBar = () => {
   useEffect(() => {
   async function fetchProfileImage() {
     try {
-      // 1. Get the current session and user ID
       const userRes = await axios.get("/api/session");
       const id = userRes.data.userId;
       setUserId(id);
 
       // 2. Fetch the profile with the correct userId
       const profileRes = await axios.get(`/api/profile/${id}`);
-      setImage(profileRes.data.user?.imageUrl || null);
+      setImage(profileRes.data?.user?.imageUrl || null);
     } catch (err) {
       console.error("Error fetching image", err);
     }
